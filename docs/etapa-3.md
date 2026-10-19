@@ -40,7 +40,7 @@ Rota: `/admin/mais-desejados`.
 **Redux:** não usa. O ranking fica no estado local da página.
 
 1. Nova seção do painel de administração, acessível por um item "Mais desejados" no menu do painel.
-2. A seção lista os anúncios ordenados pela quantidade de estudantes que os têm na lista de interesse, do maior para o menor, com paginação tradicional.
+2. A seção lista só anúncios ativos, ordenados pela quantidade de estudantes que os adicionaram à lista de interesse nos últimos 30 dias, do maior para o menor, com paginação tradicional.
 3. Cada linha mostra a posição no ranking, a foto de capa, o título, o anunciante, a modalidade, o estado e a quantidade de interessados, com link para `/admin/anuncios/:id`.
 4. Filtros por modalidade e categoria. Filtros e página ficam na query string. Exemplo: `/admin/mais-desejados?modalidade=doacao&pagina=2`.
 5. A seção é um microfrontend separado, integrado com Module Federation: a aplicação principal o carrega na rota `/admin/mais-desejados`. O restante do painel (RF06) continua na aplicação principal.

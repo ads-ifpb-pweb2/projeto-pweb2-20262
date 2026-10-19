@@ -25,7 +25,7 @@ Rotas: `/login`, `/cadastro`.
 
 **Redux:** estado `auth` com o usuário logado, o token e o status das requisições (carregando e erro); thunks de cadastro, login, logout e restauração da sessão ao recarregar a página. A lista de cursos e os valores digitados nos formulários ficam fora do Redux: a página de cadastro busca os cursos e guarda tudo em estado local.
 
-1. Cadastro com nome, e-mail, senha, curso e contato (opcional).
+1. Cadastro com nome, e-mail, senha, curso e telefone/WhatsApp para contato (opcional).
 2. O formulário rejeita e-mails fora do domínio `@academico.ifpb.edu.br`, com mensagem de erro clara (a API também valida).
 3. O curso é escolhido em uma lista com os cursos do campus, fornecida pela API.
 4. Login, logout e manutenção da sessão (token) entre recarregamentos da página.
@@ -48,7 +48,7 @@ Rotas: `/anuncios/novo`, `/anuncios/:id`, `/anuncios/:id/editar`.
 
 **Redux:** estado `anuncios` com o anúncio em detalhe e o status das requisições; thunks para buscar, criar e editar um anúncio e para alterar o seu estado. O formulário em edição e a pré-visualização das fotos ficam fora do Redux, em estado local. Mesmo sendo dados de uma página só, o anúncio fica no Redux nesta etapa para praticar thunks com carregamento e erro.
 
-1. Campos: título, descrição, modalidade (venda ou doação), preço, estado de conservação, categoria, local de entrega (texto livre) e fotos.
+1. Campos: título, descrição, modalidade (venda ou doação), preço, estado de conservação (lista fixa de valores, fornecida pela API), categoria, local de entrega (texto livre) e fotos.
 2. Preço é obrigatório em vendas e oculto em doações.
 3. Upload de 1 a 10 fotos, com pré-visualização, remoção e escolha da foto de capa.
 4. Estados: ativo, pausado, reservado e vendido. Em doações, o estado final se chama "concluído". Apenas o anunciante altera o estado e edita o anúncio.
@@ -62,7 +62,7 @@ Rotas: `/vendas`, `/doacoes` (e `/`, que redireciona para `/vendas`).
 **Redux:** não usa. A página busca os anúncios a partir dos parâmetros da URL e guarda os resultados em estado local. Filtros, ordenação e página ficam só na query string.
 
 1. Duas telas de busca separadas: uma para itens à venda e outra para itens em doação.
-2. As duas listam apenas anúncios ativos, com paginação tradicional.
+2. As duas listam apenas anúncios ativos, com paginação tradicional. O estudante escolhe quantos itens ver por página: 5, 10, 25 ou 50 (parâmetro `tamanho`).
 3. Vendas: filtros por categoria e faixa de preço; ordenação por data de publicação ou por preço, em ordem crescente ou decrescente.
 4. Doações: filtro por categoria; ordenação por data de publicação, em ordem crescente ou decrescente.
 5. Sem ordenação na URL, as duas telas mostram os mais recentes primeiro (data decrescente).
@@ -74,4 +74,4 @@ Rotas: `/vendas`, `/doacoes` (e `/`, que redireciona para `/vendas`).
 | Vendas, maior preço primeiro | `/vendas?ordem=preco&direcao=desc` |
 | Vendas, mais recentes primeiro | `/vendas?ordem=data&direcao=desc` |
 | Doações, mais antigas primeiro | `/doacoes?ordem=data&direcao=asc` |
-| Vendas de livros entre R$ 10 e R$ 50, menor preço primeiro, página 2 | `/vendas?categoria=livros&precoMin=10&precoMax=50&ordem=preco&direcao=asc&pagina=2` |
+| Vendas de eletrônicos entre R$ 10 e R$ 50, menor preço primeiro, página 2 com 25 itens | `/vendas?categoria=eletronicos&precoMin=10&precoMax=50&ordem=preco&direcao=asc&pagina=2&tamanho=25` |

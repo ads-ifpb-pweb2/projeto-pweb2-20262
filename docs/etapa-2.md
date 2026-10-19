@@ -32,7 +32,7 @@ Rota: `/interesses`.
 **Redux:** estado `interesses` com os anúncios da lista de interesse e o status das requisições; thunks para carregar, adicionar e remover. O botão "Tenho interesse" do detalhe do anúncio lê este estado para saber se o anúncio já está na lista.
 
 1. O estudante adiciona e remove anúncios da sua lista de interesse.
-2. A lista indica quando um anúncio mudou de estado (pausado, reservado, vendido ou concluído) ou foi removido.
+2. A lista indica quando um anúncio mudou de estado desde que o estudante o adicionou (por exemplo, de ativo para reservado) ou foi removido.
 3. Quando outro estudante adiciona um anúncio à lista de interesse, o anunciante recebe uma Push Notification enviada pela API.
 
 ## RF06 – Administração

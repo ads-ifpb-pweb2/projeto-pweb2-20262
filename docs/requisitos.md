@@ -74,7 +74,7 @@ A stack e os requisitos técnicos obrigatórios estão no arquivo de cada etapa,
 
 Vale para todas as etapas:
 
-- **Backend:** API REST e servidor Socket.io fornecidos pelo professor desde a primeira etapa. Cada equipe roda a API na própria máquina e pode alterar o script SQL de carga, por exemplo para cadastrar categorias. O script e a documentação da API serão disponibilizados junto com o backend.
+- **Backend:** API REST e servidor Socket.io fornecidos pelo professor desde a primeira etapa. Cada equipe roda a API na própria máquina e pode alterar o script SQL de carga, por exemplo para cadastrar categorias. O script e a documentação da API serão disponibilizados junto com o backend. As decisões do backend estão em [backend.md](backend.md).
 
 ## Etapas
 
