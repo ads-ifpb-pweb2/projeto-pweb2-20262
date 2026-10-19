@@ -44,15 +44,23 @@ As rotas de estudante e as de administrador são separadas: um estudante que ace
 | `/perfil/editar` | Edição dos próprios dados e da foto | Estudante | RF02 |
 | `/usuarios/:id` | Perfil de outro estudante | Estudante | RF02 |
 | `/interesses` | Lista de interesse | Estudante | RF05 |
-| `/conversas` | Lista de conversas | Estudante | RF06 |
-| `/conversas/:usuarioId` | Conversa com um estudante | Estudante | RF06 |
-| `/admin/login` | Login do administrador | Visitante | RF07 |
-| `/admin` | Painel com a listagem geral de anúncios | Administrador | RF07 |
+| `/conversas` | Lista de conversas | Estudante | RF07 |
+| `/conversas/:usuarioId` | Conversa com um estudante | Estudante | RF07 |
+| `/admin/login` | Login do administrador | Visitante | RF06 |
+| `/admin` | Redireciona para `/admin/anuncios` | Administrador | RF06 |
+| `/admin/anuncios` | Listagem geral de anúncios, com filtros e remoção | Administrador | RF06 |
+| `/admin/anuncios/:id` | Detalhe do anúncio, com remoção | Administrador | RF06 |
 | `*` | Página não encontrada | Todos | — |
 
 ## Requisitos funcionais
 
-### RF01 – Autenticação e cadastro
+Os requisitos estão agrupados pela etapa em que são entregues. As demais entregas de cada etapa (Redux, cache, testes) estão na seção [Etapas](#etapas).
+
+### Etapa 1
+
+Temas: React básico com hooks, React Router e Redux.
+
+#### RF01 – Autenticação e cadastro
 
 Rotas: `/login`, `/cadastro`.
 
@@ -62,15 +70,16 @@ Rotas: `/login`, `/cadastro`.
 4. Login, logout e manutenção da sessão (token) entre recarregamentos da página.
 5. Todas as rotas, exceto `/login`, `/cadastro` e `/admin/login`, são protegidas. Sem sessão, as rotas de estudante redirecionam para `/login`, e as rotas `/admin` redirecionam para `/admin/login`.
 
-### RF02 – Perfil
+#### RF02 – Perfil
 
 Rotas: `/perfil`, `/perfil/editar`, `/usuarios/:id`.
 
 1. O perfil exibe foto, nome, curso, contato e os anúncios do usuário. Os demais estudantes veem apenas os anúncios ativos; pausados, reservados, vendidos e concluídos ficam visíveis só para o dono.
 2. O usuário edita os próprios dados e envia ou troca a foto de perfil.
 3. Qualquer estudante pode ver o perfil de outro estudante a partir de um anúncio.
+4. Em `/perfil`, um anúncio removido pelo administrador continua visível só para o dono, marcado como "Removido pelo administrador" e com o motivo da remoção. Este item é entregue na etapa 2, junto com o RF06.
 
-### RF03 – Anúncios
+#### RF03 – Anúncios
 
 Rotas: `/anuncios/novo`, `/anuncios/:id`, `/anuncios/:id/editar`.
 
@@ -81,7 +90,7 @@ Rotas: `/anuncios/novo`, `/anuncios/:id`, `/anuncios/:id/editar`.
 5. A publicação é imediata, sem moderação prévia.
 6. Página de detalhe com galeria de fotos, dados do anúncio, link para o perfil do anunciante e botões "Tenho interesse" e "Negociar".
 
-### RF04 – Busca e listagem
+#### RF04 – Busca e listagem
 
 Rotas: `/vendas`, `/doacoes` (e `/`, que redireciona para `/vendas`).
 
@@ -91,7 +100,11 @@ Rotas: `/vendas`, `/doacoes` (e `/`, que redireciona para `/vendas`).
 4. Doações: filtro por categoria; ordenação por mais recentes.
 5. Filtros, ordenação e página ficam na URL (query string), para que a busca possa ser compartilhada e restaurada. Exemplo: `/vendas?categoria=livros&precoMin=10&precoMax=50&ordem=preco&pagina=2`.
 
-### RF05 – Lista de interesse
+### Etapa 2
+
+Temas: thunks (ações assíncronas no Redux) e Service Workers (cache e notificações).
+
+#### RF05 – Lista de interesse
 
 Rota: `/interesses`.
 
@@ -99,7 +112,23 @@ Rota: `/interesses`.
 2. A lista indica quando um anúncio mudou de estado (pausado, reservado, vendido ou concluído) ou foi removido.
 3. Quando outro estudante adiciona um anúncio à lista de interesse, o anunciante recebe uma Push Notification enviada pela API.
 
-### RF06 – Chat
+#### RF06 – Administração
+
+Rotas: `/admin/login`, `/admin`, `/admin/anuncios`, `/admin/anuncios/:id`.
+
+1. O administrador entra por `/admin/login` e usa um painel próprio, separado das telas dos estudantes. A rota `/admin` redireciona para `/admin/anuncios`.
+2. `/admin/anuncios` lista os anúncios de todos os estudantes, em qualquer estado (ativo, pausado, reservado, vendido ou concluído), com paginação tradicional. Anúncios removidos não aparecem.
+3. Cada linha mostra foto de capa, título, anunciante, modalidade, estado e data de publicação, com link para o detalhe e um botão "Remover".
+4. A listagem tem filtros por modalidade, categoria e estado, busca por título e ordenação por mais recentes. Filtros, ordenação e página ficam na query string. Exemplo: `/admin/anuncios?modalidade=venda&estado=ativo&busca=notebook&pagina=2`.
+5. `/admin/anuncios/:id` mostra o anúncio completo (galeria de fotos, dados e anunciante) e o botão "Remover".
+6. Remover, na listagem ou no detalhe, abre uma confirmação com o campo de motivo, obrigatório. Depois de confirmada, o anúncio sai da listagem, e quem estava no detalhe volta para `/admin/anuncios`.
+7. O anunciante recebe uma Push Notification, enviada pela API, avisando que o anúncio foi removido e com o motivo da remoção.
+
+### Etapa 3
+
+Temas: microfrontends com Module Federation e WebSockets com Socket.io.
+
+#### RF07 – Chat
 
 Rotas: `/conversas`, `/conversas/:usuarioId`.
 
@@ -108,22 +137,14 @@ Rotas: `/conversas`, `/conversas/:usuarioId`.
 3. Mensagens em tempo real via WebSockets, com Socket.io.
 4. Lista de conversas com a última mensagem e indicação de não lidas.
 5. Histórico da conversa carregado ao abri-la.
-6. Notificação de novas mensagens por Push Notification, enviada pela API. O frontend pede a permissão ao usuário, registra o service worker e envia a inscrição para a API.
-
-### RF07 – Administração
-
-Rotas: `/admin/login`, `/admin`.
-
-1. O administrador entra por `/admin/login` e usa um painel próprio em `/admin`, separado das telas dos estudantes, com a listagem geral de anúncios.
-2. Pelo painel, ele remove qualquer anúncio, informando obrigatoriamente o motivo.
-3. O anunciante recebe um e-mail com o motivo da remoção (enviado pela API).
+6. Notificação de novas mensagens por Push Notification, enviada pela API. O frontend reaproveita o service worker e a inscrição de push feitos na etapa 2 (RF05.3).
 
 ## Requisitos técnicos e pedagógicos
 
 - **Stack obrigatória:** React com TypeScript, React Router, Redux (com thunks), Module Federation para os microfrontends e Socket.io para os WebSockets.
 - **UI própria:** os grupos criam os próprios componentes, sem biblioteca de componentes pronta.
 - **Storybook:** todos os componentes de UI documentados em um Storybook, que só precisa rodar localmente.
-- **Testes:** testes automatizados são obrigatórios a partir da etapa 2, com no mínimo 10 testes unitários e 5 testes end-to-end (e2e). Na etapa 3, a equipe acrescenta novos testes unitários e e2e para o chat e a administração.
+- **Testes:** testes automatizados são obrigatórios a partir da etapa 2, com no mínimo 10 testes unitários e 5 testes end-to-end (e2e). Na etapa 3, a equipe acrescenta novos testes unitários e e2e para o chat e o microfrontend de administração.
 - **Backend:** API REST e servidor Socket.io fornecidos pelo professor desde a primeira etapa. Cada equipe roda a API na própria máquina e pode alterar o script SQL de carga, por exemplo para cadastrar categorias. O script e a documentação da API serão disponibilizados junto com o backend.
 - **Offline:** o service worker guarda em cache só a casca da aplicação (HTML, CSS, JavaScript e ícones). Sem conexão, a aplicação abre e mostra uma tela de "sem conexão"; dados da API não ficam em cache.
 - **Fora do escopo por enquanto:** responsividade, acessibilidade, deploy e regras de Git não são cobrados. Também não fazem parte do projeto: recuperação de senha, confirmação de e-mail e denúncia de anúncios por estudantes.
@@ -135,8 +156,8 @@ O projeto tem 3 etapas. Cada uma introduz um tema da disciplina e entrega um blo
 | Etapa | Temas | Entregas |
 | --- | --- | --- |
 | 1 | React básico com hooks, React Router e Redux | RF01 Autenticação e cadastro, RF02 Perfil, RF03 Anúncios e RF04 Busca e listagem; sessão e dados compartilhados em Redux; componentes de UI documentados no Storybook |
-| 2 | Thunks (ações assíncronas no Redux) e Service Workers (cache e notificações) | Chamadas à API feitas por thunks; RF05 Lista de interesse; cache da casca da aplicação pelo service worker, com tela de "sem conexão"; Push Notification ao anunciante quando alguém demonstra interesse no anúncio dele (RF05.3); no mínimo 10 testes unitários e 5 testes e2e |
-| 3 | Microfrontends com Module Federation e WebSockets com Socket.io | RF06 Chat em tempo real; RF07 Administração como microfrontend separado das telas dos estudantes, carregado nas rotas `/admin`; novos testes unitários e e2e para o chat e a administração |
+| 2 | Thunks (ações assíncronas no Redux) e Service Workers (cache e notificações) | Chamadas à API feitas por thunks; RF05 Lista de interesse; cache da casca da aplicação pelo service worker, com tela de "sem conexão"; Push Notification ao anunciante quando alguém demonstra interesse no anúncio dele (RF05.3); RF06 Administração; no mínimo 10 testes unitários e 5 testes e2e |
+| 3 | Microfrontends com Module Federation e WebSockets com Socket.io | RF07 Chat em tempo real; painel de administração extraído para um microfrontend com Module Federation, carregado nas rotas `/admin`; novos testes unitários e e2e para o chat e o microfrontend |
 
 - [ ] Definir as datas de entrega de cada etapa.
 - [ ] Disponibilizar o backend, o script SQL de carga e a documentação da API.
