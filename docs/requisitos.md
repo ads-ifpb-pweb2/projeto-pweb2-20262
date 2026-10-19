@@ -6,7 +6,7 @@ Aplicação web (somente frontend, em React) para estudantes do Campus Cajazeira
 
 - **Público:** exclusivamente estudantes do Campus Cajazeiras, com e-mail `@academico.ifpb.edu.br`.
 - **Modalidades:** venda e doação. Não há trocas nem pagamento pela plataforma; a negociação acontece no chat e a entrega, presencialmente.
-- **Categorias iniciais:** livros e eletrônicos. Cada equipe pode acrescentar ou trocar categorias editando os scripts SQL de carga da API, o que diferencia os projetos entre si.
+- **Categorias:** decididas pelos alunos. Cada equipe define uma ou mais categorias editando os scripts SQL de carga da API, o que diferencia os projetos entre si. Por exemplo, uma equipe pode fazer um marketplace de produtos artesanais e outra, um de equipamentos.
 - **Formato:** grupos de até 4 alunos, projeto dividido em 3 etapas.
 
 ## Perfis e permissões
@@ -123,8 +123,10 @@ Rotas: `/admin/login`, `/admin`.
 - **Stack obrigatória:** React com TypeScript, React Router, Redux (com thunks), Module Federation para os microfrontends e Socket.io para os WebSockets.
 - **UI própria:** os grupos criam os próprios componentes, sem biblioteca de componentes pronta.
 - **Storybook:** todos os componentes de UI documentados em um Storybook, que só precisa rodar localmente.
+- **Testes:** testes automatizados são obrigatórios a partir da etapa 2, com no mínimo 10 testes unitários e 5 testes end-to-end (e2e). Na etapa 3, a equipe acrescenta novos testes unitários e e2e para o chat e a administração.
 - **Backend:** API REST e servidor Socket.io fornecidos pelo professor desde a primeira etapa. Cada equipe roda a API na própria máquina e pode alterar o script SQL de carga, por exemplo para cadastrar categorias. O script e a documentação da API serão disponibilizados junto com o backend.
-- **Fora do escopo por enquanto:** responsividade, acessibilidade, deploy e regras de Git não são cobrados.
+- **Offline:** o service worker guarda em cache só a casca da aplicação (HTML, CSS, JavaScript e ícones). Sem conexão, a aplicação abre e mostra uma tela de "sem conexão"; dados da API não ficam em cache.
+- **Fora do escopo por enquanto:** responsividade, acessibilidade, deploy e regras de Git não são cobrados. Também não fazem parte do projeto: recuperação de senha, confirmação de e-mail e denúncia de anúncios por estudantes.
 
 ## Etapas
 
@@ -133,8 +135,14 @@ O projeto tem 3 etapas. Cada uma introduz um tema da disciplina e entrega um blo
 | Etapa | Temas | Entregas |
 | --- | --- | --- |
 | 1 | React básico com hooks, React Router e Redux | RF01 Autenticação e cadastro, RF02 Perfil, RF03 Anúncios e RF04 Busca e listagem; sessão e dados compartilhados em Redux; componentes de UI documentados no Storybook |
-| 2 | Thunks (ações assíncronas no Redux) e Service Workers (cache e notificações) | Chamadas à API feitas por thunks; RF05 Lista de interesse; cache de recursos e anúncios pelo service worker; Push Notification ao anunciante quando alguém demonstra interesse no anúncio dele (RF05.3) |
-| 3 | Microfrontends com Module Federation e WebSockets com Socket.io | RF06 Chat em tempo real; RF07 Administração como microfrontend separado das telas dos estudantes, carregado nas rotas `/admin` |
+| 2 | Thunks (ações assíncronas no Redux) e Service Workers (cache e notificações) | Chamadas à API feitas por thunks; RF05 Lista de interesse; cache da casca da aplicação pelo service worker, com tela de "sem conexão"; Push Notification ao anunciante quando alguém demonstra interesse no anúncio dele (RF05.3); no mínimo 10 testes unitários e 5 testes e2e |
+| 3 | Microfrontends com Module Federation e WebSockets com Socket.io | RF06 Chat em tempo real; RF07 Administração como microfrontend separado das telas dos estudantes, carregado nas rotas `/admin`; novos testes unitários e e2e para o chat e a administração |
 
 - [ ] Definir as datas de entrega de cada etapa.
 - [ ] Disponibilizar o backend, o script SQL de carga e a documentação da API.
+
+## Entrega e avaliação
+
+- Ao fim de cada etapa, a equipe apresenta em sala a aplicação e o Storybook funcionando com os requisitos da etapa.
+- A nota da etapa é única para o grupo.
+- As três etapas têm o mesmo peso: cada uma vale 1/3 da nota final.
