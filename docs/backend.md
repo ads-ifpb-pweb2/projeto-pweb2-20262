@@ -70,6 +70,9 @@ O [`docker-compose.yml`](../docker-compose.yml) da raiz sobe três serviços:
 
 ## Chat
 
+- Tempo real com o WebSocket nativo do Spring e STOMP (`spring-boot-starter-websocket`), na mesma porta da API. No frontend, o cliente é o `@stomp/stompjs`.
+- O cliente conecta em `/ws` e envia o JWT no cabeçalho `Authorization` do frame `CONNECT`; a API associa a conexão ao usuário.
+- O envio de mensagens é feito pela API REST. A API grava a mensagem e a entrega aos dois participantes com `convertAndSendToUser`, no destino `/user/queue/mensagens`.
 - A mensagem do botão "Negociar" (RF07.2) é um tipo especial de mensagem, ligado ao anúncio, e não texto.
 - Há dois tipos de mensagem, `texto` e `negociacao`. A de negociação guarda o id do anúncio e uma cópia do título, da foto de capa e do preço no momento do envio, para continuar legível se o anúncio mudar ou for removido.
 
@@ -91,6 +94,6 @@ O [`docker-compose.yml`](../docker-compose.yml) da raiz sobe três serviços:
 | Lista de interesse | Adicionar, remover, listar com estado ao adicionar e estado atual | RF05 |
 | Administração | Listagem geral com filtros, detalhe, remoção com motivo; o dono continua vendo o anúncio removido e o motivo | RF06, RF02.4 |
 | Mais desejados | Ranking público, sem token | RF08 |
-| Chat | Servidor Socket.io, conversas, histórico, não lidas, mensagem de negociação | RF07 |
+| Chat | WebSocket com STOMP, conversas, histórico, não lidas, mensagem de negociação | RF07 |
 | Push | Guardar a inscrição; notificar interesse em anúncio, remoção pelo administrador e mensagem nova | RF05.3, RF06.7, RF07.6 |
 | Carga | Script SQL com cursos e categoria de exemplo | — |

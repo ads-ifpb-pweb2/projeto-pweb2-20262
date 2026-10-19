@@ -2,7 +2,7 @@
 
 Visão geral, perfis, rotas e regras gerais do projeto: [requisitos.md](requisitos.md).
 
-**Temas:** microfrontends com Module Federation e WebSockets com Socket.io.
+**Temas:** microfrontends com Module Federation e WebSockets com STOMP.
 
 Os requisitos das etapas 1 e 2 continuam valendo e devem seguir funcionando.
 
@@ -17,18 +17,18 @@ Os requisitos das etapas 1 e 2 continuam valendo e devem seguir funcionando.
 Tudo o que as etapas [1](etapa-1.md) e [2](etapa-2.md) exigem continua valendo. Esta etapa acrescenta:
 
 - **Module Federation:** a seção Mais desejados (RF08) é um microfrontend separado, carregado pela aplicação principal.
-- **Socket.io:** cliente Socket.io para as mensagens em tempo real do chat.
+- **WebSockets com STOMP:** cliente `@stomp/stompjs` para receber as mensagens do chat em tempo real.
 - **Testes automatizados:** novos testes unitários e e2e para o chat e para o microfrontend, além dos testes da etapa 2.
 
 ## RF07 – Chat
 
 Rotas: `/conversas`, `/conversas/:usuarioId`.
 
-**Redux:** estado `chat` com a lista de conversas (última mensagem e quantidade de não lidas), as mensagens da conversa aberta e o status das requisições; thunks para carregar as conversas, carregar o histórico e enviar mensagens. Cada mensagem recebida pelo Socket.io é despachada como ação para a store. A conexão do Socket.io fica fora do Redux, por não ser um valor serializável.
+**Redux:** estado `chat` com a lista de conversas (última mensagem e quantidade de não lidas), as mensagens da conversa aberta e o status das requisições; thunks para carregar as conversas, carregar o histórico e enviar mensagens. Cada mensagem recebida pelo WebSocket é despachada como ação para a store. A conexão STOMP fica fora do Redux, por não ser um valor serializável.
 
 1. Cada par de estudantes tem uma única conversa contínua, independente de anúncio.
 2. O botão "Negociar" no anúncio abre a conversa com o anunciante e insere uma mensagem padronizada que identifica o anúncio (título, foto de capa e preço ou "Doação"), marcando o início de uma nova negociação.
-3. Mensagens em tempo real via WebSockets, com Socket.io.
+3. Mensagens em tempo real via WebSockets com STOMP: o envio é feito pela API REST, e as mensagens novas chegam pelo WebSocket.
 4. Lista de conversas com a última mensagem e indicação de não lidas.
 5. Histórico da conversa carregado ao abri-la.
 6. Notificação de novas mensagens por Push Notification, enviada pela API. O frontend reaproveita o service worker e a inscrição de push feitos na etapa 2 (RF05.3).

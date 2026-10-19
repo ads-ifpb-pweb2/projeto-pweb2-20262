@@ -70,11 +70,11 @@ A stack e os requisitos técnicos obrigatórios estão no arquivo de cada etapa,
 | --- | --- |
 | [1](etapa-1.md) | React com TypeScript, React Router, Redux com thunks, UI própria e Storybook |
 | [2](etapa-2.md) | Service worker (cache e push) e testes unitários e e2e |
-| [3](etapa-3.md) | Module Federation, Socket.io e novos testes |
+| [3](etapa-3.md) | Module Federation, WebSockets com STOMP e novos testes |
 
 Vale para todas as etapas:
 
-- **Backend:** API REST e servidor Socket.io fornecidos pelo professor desde a primeira etapa. Cada equipe roda a API na própria máquina e pode alterar o script SQL de carga, por exemplo para cadastrar categorias. O script e a documentação da API serão disponibilizados junto com o backend. As decisões do backend estão em [backend.md](backend.md).
+- **Backend:** API REST e servidor WebSocket (STOMP) fornecidos pelo professor desde a primeira etapa. Cada equipe roda a API na própria máquina e pode alterar o script SQL de carga, por exemplo para cadastrar categorias. O script e a documentação da API serão disponibilizados junto com o backend. As decisões do backend estão em [backend.md](backend.md).
 
 ## Etapas
 
@@ -84,7 +84,7 @@ O projeto tem 3 etapas. Cada uma introduz um tema da disciplina e entrega um blo
 | --- | --- | --- |
 | [1](etapa-1.md) | React básico com hooks, React Router e Redux com thunks | RF01 a RF04 |
 | [2](etapa-2.md) | Service Workers (cache e notificações) | RF05 e RF06 |
-| [3](etapa-3.md) | Microfrontends com Module Federation e WebSockets com Socket.io | RF07 e RF08 |
+| [3](etapa-3.md) | Microfrontends com Module Federation e WebSockets com STOMP | RF07 e RF08 |
 
 Cada etapa acumula as anteriores: os requisitos já entregues devem continuar funcionando.
 
