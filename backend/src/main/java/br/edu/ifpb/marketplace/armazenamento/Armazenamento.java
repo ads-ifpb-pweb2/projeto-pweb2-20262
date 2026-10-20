@@ -20,6 +20,7 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.model.NoSuchBucketException;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 /** Fotos no armazenamento compatível com S3 (RustFS no Docker Compose). */
@@ -81,9 +82,18 @@ public class Armazenamento {
         cliente.putObject(b -> b.bucket(bucket).key(chave).contentType(tipo), RequestBody.fromBytes(conteudo));
     }
 
+    public boolean existe(String chave) {
+        try {
+            cliente.headObject(b -> b.bucket(bucket).key(chave));
+            return true;
+        } catch (NoSuchKeyException e) {
+            return false;
+        }
+    }
+
     /**
      * Remove sem propagar erro: um objeto que sobrou no bucket não deve desfazer a operação.
-     * As fotos da carga ({@code carga/}) nunca são removidas, porque o carga.sql pode reutilizá-las.
+     * As fotos da carga ({@code carga/}) nunca são removidas, porque as migrações de carga as referenciam.
      */
     public void remover(String chave) {
         if (chave.startsWith("carga/")) {

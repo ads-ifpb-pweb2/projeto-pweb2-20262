@@ -6,7 +6,7 @@ A descrição do projeto, com requisitos e etapas, está em [docs/requisitos.md]
 
 Cada etapa tem o seu arquivo: [etapa 1](docs/etapa-1.md), [etapa 2](docs/etapa-2.md) e [etapa 3](docs/etapa-3.md).
 
-As decisões do backend estão em [docs/backend.md](docs/backend.md).
+As decisões do backend estão em [docs/backend.md](docs/backend.md), e o guia do banco e da carga está em [docs/banco-de-dados.md](docs/banco-de-dados.md).
 
 ## Como rodar o backend
 
@@ -48,24 +48,26 @@ Para rodar a coleção inteira pelo terminal, com a API no ar:
 npx newman run backend/postman/marketplace.postman_collection.json --working-dir .
 ```
 
-### Categorias e dados de carga
+### Banco de dados e carga
 
-As categorias da equipe ficam no script `backend/db/carga.sql`. A API aplica o script quando o banco está vazio, então, depois de editá-lo, apague os dados e suba de novo:
+O banco é criado e atualizado pelo [Flyway](https://documentation.red-gate.com/flyway) com as migrações de `backend/db/migration`: `V1__schema.sql` (tabelas) e `V2__carga.sql` (cursos, categorias e dados de exemplo). Ao subir, a API aplica as migrações que faltam.
+
+- **Antes da primeira inicialização** (o primeiro `docker compose up`), edite o `V2__carga.sql`: troque a categoria de exemplo pelas da equipe e adapte ou apague os dados de exemplo.
+- **Depois**, não edite mais as migrações existentes. Cada mudança vira uma migração nova, com uma subversão da última migração do backend (`V2_1__categorias.sql`, por exemplo). Os números inteiros ficam reservados para as etapas.
+- **Numa nova etapa**, o backend traz migrações novas e basta `docker compose up --build`: o banco é atualizado sem perder os dados.
+
+Para recriar o banco do zero com as migrações (apaga também as fotos enviadas):
 
 ```bash
 docker compose down -v
 docker compose up --build
 ```
 
-O `down -v` apaga o banco e as fotos enviadas.
-
-### Atualizar o backend para uma nova etapa
-
-Cada etapa acrescenta tabelas ao banco, e a API só aplica o `schema.sql` quando o banco está vazio. Ao atualizar o backend, apague os dados e suba de novo com os mesmos comandos acima (`docker compose down -v` e `docker compose up --build`).
+O passo a passo, com exemplos e a solução dos erros mais comuns, está em [docs/banco-de-dados.md](docs/banco-de-dados.md).
 
 ## Testes da API
 
-Os testes de integração ficam em `backend/src/test`. Cada classe sobe a API com um banco novo (aplicando `schema.sql` e `carga.sql`) e um armazenamento RustFS real, criado pelo [Testcontainers](https://testcontainers.com). É preciso ter o Docker rodando.
+Os testes de integração ficam em `backend/src/test`. Cada classe sobe a API com um banco novo (aplicando as migrações de `backend/db/migration`) e um armazenamento RustFS real, criado pelo [Testcontainers](https://testcontainers.com). É preciso ter o Docker rodando.
 
 Com Java 25 instalado:
 

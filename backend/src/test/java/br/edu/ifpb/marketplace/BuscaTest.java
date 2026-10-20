@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-/** Só lê dados: as contagens vêm do carga.sql (9 vendas e 4 doações ativas). */
+/** Só lê dados: as contagens vêm do V2__carga.sql (9 vendas e 4 doações ativas). */
 class BuscaTest extends IntegracaoBase {
 
     private String token;

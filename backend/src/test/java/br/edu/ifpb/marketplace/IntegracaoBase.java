@@ -21,7 +21,7 @@ import org.testcontainers.containers.wait.strategy.Wait;
 
 /**
  * Sobe a API numa porta aleatória, com um armazenamento RustFS real (Testcontainers) e um banco SQLite novo
- * por classe de teste: cada classe começa só com o schema.sql e o carga.sql de {@code backend/db}.
+ * por classe de teste: cada classe começa só com as migrações de {@code backend/db/migration}.
  * Requer o Docker rodando.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

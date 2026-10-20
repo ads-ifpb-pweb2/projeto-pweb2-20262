@@ -23,7 +23,7 @@ O [`docker-compose.yml`](../docker-compose.yml) da raiz sobe dois serviços:
 | `armazenamento` | Armazenamento das fotos, com [RustFS](https://rustfs.com) (compatível com S3) | 9000 (API S3) e 9001 (console, em `/rustfs/console/`) |
 
 - O banco SQLite fica em `/app/data/marketplace.db`, no volume `dados`. As fotos ficam no volume `fotos`.
-- A pasta `backend/db` é montada em `/app/db`. A API aplica `schema.sql` e `carga.sql` dessa pasta quando o banco está vazio e envia para o armazenamento as fotos de exemplo de `backend/db/fotos/`.
+- A pasta `backend/db` é montada em `/app/db`. Ao subir, a API aplica com o Flyway as migrações de `backend/db/migration` que faltam (`V1__schema.sql`, `V2__carga.sql` e as das etapas seguintes) e envia para o armazenamento as fotos de exemplo de `backend/db/fotos/` que ainda não estão lá. Cada etapa acrescenta migrações; as equipes criam as suas com subversões (`V2_1__categorias.sql`). Detalhes em [banco-de-dados.md](banco-de-dados.md).
 - Ao iniciar, a API cria o bucket `marketplace` se ele ainda não existir.
 - Variáveis de ambiente: `.env` (copiado de [`.env.example`](../.env.example)) com as credenciais do armazenamento (`S3_ACCESS_KEY` e `S3_SECRET_KEY`), segredo e expiração do JWT; o compose acrescenta `DB_URL`, `CARGA_DIR`, `S3_ENDPOINT`, `S3_PUBLIC_URL` e `S3_BUCKET`.
 - A API fala com o armazenamento por `S3_ENDPOINT` (`http://armazenamento:9000`), mas assina as URLs das fotos com `S3_PUBLIC_URL` (`http://localhost:9000`). A assinatura depende do host, e é esse endereço que o navegador acessa.
@@ -32,8 +32,8 @@ O [`docker-compose.yml`](../docker-compose.yml) da raiz sobe dois serviços:
 
 - **Estado de conservação:** lista fixa de valores, guardada como enum: `novo`, `seminovo` e `usado`.
 - **Contato:** telefone/WhatsApp, opcional no cadastro.
-- **Categorias:** nome e `slug`. O `slug` é o identificador usado na URL e no filtro da busca (`?categoria=eletronicos`): minúsculas, sem acentos e com hífen no lugar de espaços. O script de carga traz a categoria de exemplo "Eletrônicos" (`eletronicos`); cada equipe troca ou acrescenta as suas.
-- **Cursos:** carregados pelo script de carga:
+- **Categorias:** nome e `slug`. O `slug` é o identificador usado na URL e no filtro da busca (`?categoria=eletronicos`): minúsculas, sem acentos e com hífen no lugar de espaços. A migração de carga traz a categoria de exemplo "Eletrônicos" (`eletronicos`); cada equipe acrescenta as suas numa migração nova.
+- **Cursos:** carregados pela migração de carga:
     - Análise e Desenvolvimento de Sistemas
     - Engenharia de Controle e Automação
     - Engenharia Civil
@@ -96,4 +96,4 @@ O [`docker-compose.yml`](../docker-compose.yml) da raiz sobe dois serviços:
 | Mais desejados | Ranking público, sem token | RF08 |
 | Chat | WebSocket com STOMP, conversas, histórico, não lidas, mensagem de negociação | RF07 |
 | Push | Guardar a inscrição; notificar interesse em anúncio, remoção pelo administrador e mensagem nova | RF05.3, RF06.7, RF07.6 |
-| Carga | Script SQL com cursos e categoria de exemplo | — |
+| Carga | Migrações do Flyway com o schema, os cursos e a categoria de exemplo | — |

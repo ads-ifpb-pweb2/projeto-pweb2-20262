@@ -9,9 +9,9 @@ spring:
         foreign_keys: true
         journal_mode: WAL
         busy_timeout: 5000
-  sql:
-    init:
-      mode: never
+  flyway:
+    # Fora do classpath: o compose monta ./backend/db, então editar as migrações não exige rebuild
+    locations: filesystem:${CARGA_DIR:./db}/migration
   servlet:
     multipart:
       max-file-size: 5MB

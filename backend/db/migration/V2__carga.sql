@@ -1,5 +1,10 @@
--- Dados iniciais do Marketplace IFPB Cajazeiras.
--- A API aplica este arquivo quando o banco está vazio. Depois de editá-lo, rode:
+-- Dados iniciais do Marketplace IFPB Cajazeiras. Migração do Flyway, aplicada pela API ao subir.
+-- Guia completo: docs/banco-de-dados.md
+--
+-- ANTES DA PRIMEIRA INICIALIZAÇÃO (primeiro "docker compose up"): edite à vontade.
+--   Troque as categorias e adapte ou apague os dados de exemplo.
+-- DEPOIS: não edite mais este arquivo. Crie uma migração nova (V2_1__categorias.sql, por exemplo).
+--   Se editar mesmo assim, a API não sobe; recrie o banco com:
 --   docker compose down -v && docker compose up --build
 
 -- Cursos do campus
@@ -15,13 +20,13 @@ INSERT INTO curso (nome) VALUES
   ('Técnico Subsequente em Eletromecânica'),
   ('Técnico em Meio Ambiente');
 
--- Categorias: troque ou acrescente as da sua equipe.
+-- Categorias: troque ou acrescente as da sua equipe. Mantenha os ids: os anúncios de exemplo usam categoria_id.
 -- O slug vai na URL da busca (?categoria=eletronicos): minúsculas, sem acentos, hífen no lugar de espaços.
 INSERT INTO categoria (id, nome, slug) VALUES
   (1, 'Eletrônicos', 'eletronicos');
 
 -- ---------------------------------------------------------------------------
--- Dados de exemplo, para testar a busca. Pode apagar daqui para baixo.
+-- Dados de exemplo, para testar a busca. Opcional: pode adaptar ou apagar daqui para baixo.
 -- O estudante de exemplo usa a senha "senha123".
 -- As fotos ficam em backend/db/fotos/ e são enviadas ao armazenamento com a chave carga/<arquivo>.
 -- ---------------------------------------------------------------------------

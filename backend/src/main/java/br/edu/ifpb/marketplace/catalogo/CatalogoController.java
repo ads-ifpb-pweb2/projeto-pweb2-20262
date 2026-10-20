@@ -28,7 +28,7 @@ public class CatalogoController {
     }
 
     @GetMapping("/categorias")
-    @Operation(summary = "Categorias de anúncio", description = "Definidas por cada equipe no `backend/db/carga.sql`.")
+    @Operation(summary = "Categorias de anúncio", description = "Definidas por cada equipe nas migrações de `backend/db/migration`.")
     public List<Categoria> categorias() {
         return repositorio.categorias();
     }

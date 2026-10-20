@@ -1,5 +1,5 @@
 -- Schema do Marketplace IFPB Cajazeiras (etapa 1).
--- A API aplica este arquivo, e depois o carga.sql, quando o banco está vazio.
+-- Migração do Flyway, aplicada pela API ao subir. Não edite depois de aplicada: crie uma migração nova.
 -- Datas em texto ISO 8601 (UTC). Preço em centavos.
 
 CREATE TABLE curso (
