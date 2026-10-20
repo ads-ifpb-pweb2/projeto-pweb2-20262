@@ -25,7 +25,7 @@ O [`docker-compose.yml`](../docker-compose.yml) da raiz sobe dois serviços:
 - O banco SQLite fica em `/app/data/marketplace.db`, no volume `dados`. As fotos ficam no volume `fotos`.
 - A pasta `backend/db` é montada em `/app/db`. A API aplica `schema.sql` e `carga.sql` dessa pasta quando o banco está vazio e envia para o armazenamento as fotos de exemplo de `backend/db/fotos/`.
 - Ao iniciar, a API cria o bucket `marketplace` se ele ainda não existir.
-- Variáveis de ambiente: `.env` (copiado de [`.env.example`](../.env.example)) com as credenciais do armazenamento (`S3_ACCESS_KEY` e `S3_SECRET_KEY`), segredo e expiração do JWT e chaves VAPID; o compose acrescenta `DB_URL`, `CARGA_DIR`, `S3_ENDPOINT`, `S3_PUBLIC_URL` e `S3_BUCKET`.
+- Variáveis de ambiente: `.env` (copiado de [`.env.example`](../.env.example)) com as credenciais do armazenamento (`S3_ACCESS_KEY` e `S3_SECRET_KEY`), segredo e expiração do JWT; o compose acrescenta `DB_URL`, `CARGA_DIR`, `S3_ENDPOINT`, `S3_PUBLIC_URL` e `S3_BUCKET`.
 - A API fala com o armazenamento por `S3_ENDPOINT` (`http://armazenamento:9000`), mas assina as URLs das fotos com `S3_PUBLIC_URL` (`http://localhost:9000`). A assinatura depende do host, e é esse endereço que o navegador acessa.
 
 ## Dados
