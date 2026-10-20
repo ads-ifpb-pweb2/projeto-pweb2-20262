@@ -1,0 +1,1633 @@
+{
+  "info": {
+    "name": "Marketplace IFPB Cajazeiras — etapa 1",
+    "description": "Requisições de exemplo para a API da etapa 1. Documentação completa: http://localhost:8080/swagger-ui.html\n\n**Como usar**\n\n1. Suba a API (`docker compose up --build`, na raiz do repositório).\n2. Rode **Autenticação → Login** primeiro: o token fica na variável `token` da coleção e é usado em todas as requisições que exigem autenticação.\n3. **Anúncios → Criar anúncio de venda** guarda `anuncioId` e `fotoId`, usados no detalhe, na edição e na troca de estado.\n\n**Fotos:** os campos de arquivo apontam para `backend/db/fotos/`, com caminho relativo à raiz do repositório. No Postman, defina a raiz do repositório em *Settings → General → Working directory* ou escolha os arquivos de novo em cada requisição. No Newman, use `--working-dir` com a raiz.\n\nA coleção inteira roda em ordem pelo Collection Runner ou com:\n\n`npx newman run backend/postman/marketplace.postman_collection.json --working-dir .`",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "usuarioId",
+      "value": ""
+    },
+    {
+      "key": "anuncioId",
+      "value": ""
+    },
+    {
+      "key": "fotoId",
+      "value": ""
+    },
+    {
+      "key": "doacaoId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Listas",
+      "description": "Valores para os formulários. Públicas, sem token.",
+      "item": [
+        {
+          "name": "Cursos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"10 cursos\", () => pm.expect(pm.response.json()).to.have.length(10));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/cursos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cursos"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Categorias",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categorias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categorias"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Estados de conservação",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/estados-conservacao",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "estados-conservacao"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Autenticação",
+      "description": "Cadastro e login de estudantes. Públicos, sem token.",
+      "item": [
+        {
+          "name": "Cadastro",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set(\"emailCadastro\", `estudante.${Date.now()}@academico.ifpb.edu.br`);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/cadastro",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "cadastro"
+              ]
+            },
+            "description": "Cadastra um estudante e devolve a sessão. O e-mail é gerado a cada execução para não repetir.",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Estudante de Teste\",\n  \"email\": \"{{emailCadastro}}\",\n  \"senha\": \"senha123\",\n  \"cursoId\": 1,\n  \"telefone\": \"(83) 99999-1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "const corpo = pm.response.json();",
+                  "pm.collectionVariables.set(\"token\", corpo.token);",
+                  "pm.collectionVariables.set(\"usuarioId\", corpo.usuario.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Login da Ana, da carga de exemplo. Guarda o token e o id do usuário nas variáveis da coleção.",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"ana.silva@academico.ifpb.edu.br\",\n  \"senha\": \"senha123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Usuários",
+      "description": "Usuário logado e perfis. Exigem token.",
+      "item": [
+        {
+          "name": "Usuário logado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/usuarios/eu",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "usuarios",
+                "eu"
+              ]
+            },
+            "description": "Use ao recarregar a página para restaurar a sessão."
+          }
+        },
+        {
+          "name": "Editar meus dados",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/usuarios/eu",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "usuarios",
+                "eu"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Ana Silva\",\n  \"cursoId\": 1,\n  \"telefone\": \"(83) 99999-0001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Enviar foto de perfil",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/usuarios/eu/foto",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "usuarios",
+                "eu",
+                "foto"
+              ]
+            },
+            "description": "multipart/form-data com o arquivo no campo `foto` (JPEG, PNG ou WebP, até 5 MB).",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "foto",
+                  "type": "file",
+                  "src": "backend/db/fotos/usuario-ana.jpg"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Perfil de outro estudante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/usuarios/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "usuarios",
+                "2"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Meus anúncios (todos os estados)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/usuarios/{{usuarioId}}/anuncios?pagina=1&tamanho=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "usuarios",
+                "{{usuarioId}}",
+                "anuncios"
+              ],
+              "query": [
+                {
+                  "key": "pagina",
+                  "value": "1"
+                },
+                {
+                  "key": "tamanho",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Anúncios de outro estudante (só ativos)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/usuarios/2/anuncios?pagina=1&tamanho=5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "usuarios",
+                "2",
+                "anuncios"
+              ],
+              "query": [
+                {
+                  "key": "pagina",
+                  "value": "1"
+                },
+                {
+                  "key": "tamanho",
+                  "value": "5"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Busca",
+      "description": "Busca de vendas e doações: só anúncios ativos. Os parâmetros são os mesmos da query string das telas /vendas e /doacoes.",
+      "item": [
+        {
+          "name": "Vendas, mais recentes primeiro",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/anuncios?modalidade=venda",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "anuncios"
+              ],
+              "query": [
+                {
+                  "key": "modalidade",
+                  "value": "venda"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Vendas, menor preço primeiro",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/anuncios?modalidade=venda&ordem=preco&direcao=asc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "anuncios"
+              ],
+              "query": [
+                {
+                  "key": "modalidade",
+                  "value": "venda"
+                },
+                {
+                  "key": "ordem",
+                  "value": "preco"
+                },
+                {
+                  "key": "direcao",
+                  "value": "asc"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Vendas, maior preço primeiro",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/anuncios?modalidade=venda&ordem=preco&direcao=desc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "anuncios"
+              ],
+              "query": [
+                {
+                  "key": "modalidade",
+                  "value": "venda"
+                },
+                {
+                  "key": "ordem",
+                  "value": "preco"
+                },
+                {
+                  "key": "direcao",
+                  "value": "desc"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Vendas de eletrônicos entre R$ 10 e R$ 100, 5 por página",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/anuncios?modalidade=venda&categoria=eletronicos&precoMin=10&precoMax=100&ordem=preco&direcao=asc&pagina=1&tamanho=5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "anuncios"
+              ],
+              "query": [
+                {
+                  "key": "modalidade",
+                  "value": "venda"
+                },
+                {
+                  "key": "categoria",
+                  "value": "eletronicos"
+                },
+                {
+                  "key": "precoMin",
+                  "value": "10"
+                },
+                {
+                  "key": "precoMax",
+                  "value": "100"
+                },
+                {
+                  "key": "ordem",
+                  "value": "preco"
+                },
+                {
+                  "key": "direcao",
+                  "value": "asc"
+                },
+                {
+                  "key": "pagina",
+                  "value": "1"
+                },
+                {
+                  "key": "tamanho",
+                  "value": "5"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Vendas, página 2 com 5 itens",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/anuncios?modalidade=venda&pagina=2&tamanho=5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "anuncios"
+              ],
+              "query": [
+                {
+                  "key": "modalidade",
+                  "value": "venda"
+                },
+                {
+                  "key": "pagina",
+                  "value": "2"
+                },
+                {
+                  "key": "tamanho",
+                  "value": "5"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Doações, mais recentes primeiro",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/anuncios?modalidade=doacao",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "anuncios"
+              ],
+              "query": [
+                {
+                  "key": "modalidade",
+                  "value": "doacao"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Doações, mais antigas primeiro",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/anuncios?modalidade=doacao&ordem=data&direcao=asc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "anuncios"
+              ],
+              "query": [
+                {
+                  "key": "modalidade",
+                  "value": "doacao"
+                },
+                {
+                  "key": "ordem",
+                  "value": "data"
+                },
+                {
+                  "key": "direcao",
+                  "value": "asc"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Anúncios",
+      "description": "Criação, detalhe, edição e estado. Exigem token.",
+      "item": [
+        {
+          "name": "Criar anúncio de venda",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));",
+                  "const corpo = pm.response.json();",
+                  "pm.collectionVariables.set(\"anuncioId\", corpo.id);",
+                  "pm.collectionVariables.set(\"fotoId\", corpo.fotos[0].id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/anuncios",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "anuncios"
+              ]
+            },
+            "description": "multipart/form-data. De 1 a 10 arquivos no campo `fotos`; `capaIndice` é a posição da capa (a partir de 0).",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "titulo",
+                  "type": "text",
+                  "value": "Fone de ouvido com fio"
+                },
+                {
+                  "key": "descricao",
+                  "type": "text",
+                  "value": "Fone P2, funcionando perfeitamente."
+                },
+                {
+                  "key": "estadoConservacao",
+                  "type": "text",
+                  "value": "usado"
+                },
+                {
+                  "key": "categoriaId",
+                  "type": "text",
+                  "value": "1"
+                },
+                {
+                  "key": "localEntrega",
+                  "type": "text",
+                  "value": "Biblioteca"
+                },
+                {
+                  "key": "modalidade",
+                  "type": "text",
+                  "value": "venda"
+                },
+                {
+                  "key": "preco",
+                  "type": "text",
+                  "value": "35.50"
+                },
+                {
+                  "key": "fotos",
+                  "type": "file",
+                  "src": "backend/db/fotos/anuncio-01-1.jpg"
+                },
+                {
+                  "key": "fotos",
+                  "type": "file",
+                  "src": "backend/db/fotos/anuncio-01-2.jpg"
+                },
+                {
+                  "key": "capaIndice",
+                  "type": "text",
+                  "value": "0"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Criar anúncio de doação",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set(\"doacaoId\", pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/anuncios",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "anuncios"
+              ]
+            },
+            "description": "Em doações, `preco` fica de fora.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "titulo",
+                  "type": "text",
+                  "value": "Cabo de rede 3 m"
+                },
+                {
+                  "key": "descricao",
+                  "type": "text",
+                  "value": "Cabo de rede Cat5e."
+                },
+                {
+                  "key": "estadoConservacao",
+                  "type": "text",
+                  "value": "usado"
+                },
+                {
+                  "key": "categoriaId",
+                  "type": "text",
+                  "value": "1"
+                },
+                {
+                  "key": "localEntrega",
+                  "type": "text",
+                  "value": "Portaria principal"
+                },
+                {
+                  "key": "modalidade",
+                  "type": "text",
+                  "value": "doacao"
+                },
+                {
+                  "key": "fotos",
+                  "type": "file",
+                  "src": "backend/db/fotos/anuncio-10-1.jpg"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Detalhe do anúncio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/anuncios/{{anuncioId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "anuncios",
+                "{{anuncioId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Editar anúncio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"ficou com 2 fotos\", () => pm.expect(pm.response.json().fotos).to.have.length(2));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/anuncios/{{anuncioId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "anuncios",
+                "{{anuncioId}}"
+              ]
+            },
+            "description": "Envia todos os campos de novo. `fotosMantidas` (pode repetir o campo) lista as fotos atuais que continuam; as outras são removidas. `fotos` traz as novas. A capa é `capaId` (uma foto mantida) ou `capaIndice` (posição em `fotos`).",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "titulo",
+                  "type": "text",
+                  "value": "Fone de ouvido com fio (baixei o preço)"
+                },
+                {
+                  "key": "descricao",
+                  "type": "text",
+                  "value": "Fone P2, funcionando perfeitamente."
+                },
+                {
+                  "key": "estadoConservacao",
+                  "type": "text",
+                  "value": "usado"
+                },
+                {
+                  "key": "categoriaId",
+                  "type": "text",
+                  "value": "1"
+                },
+                {
+                  "key": "localEntrega",
+                  "type": "text",
+                  "value": "Biblioteca"
+                },
+                {
+                  "key": "modalidade",
+                  "type": "text",
+                  "value": "venda"
+                },
+                {
+                  "key": "preco",
+                  "type": "text",
+                  "value": "30"
+                },
+                {
+                  "key": "fotosMantidas",
+                  "type": "text",
+                  "value": "{{fotoId}}"
+                },
+                {
+                  "key": "fotos",
+                  "type": "file",
+                  "src": "backend/db/fotos/anuncio-03-1.jpg"
+                },
+                {
+                  "key": "capaIndice",
+                  "type": "text",
+                  "value": "0"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Marcar como reservado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/anuncios/{{anuncioId}}/estado",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "anuncios",
+                "{{anuncioId}}",
+                "estado"
+              ]
+            },
+            "description": "Estados: ativo, pausado, reservado, vendido (só vendas) e concluido (só doações).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"reservado\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Marcar como vendido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/anuncios/{{anuncioId}}/estado",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "anuncios",
+                "{{anuncioId}}",
+                "estado"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"vendido\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Concluir doação",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/anuncios/{{doacaoId}}/estado",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "anuncios",
+                "{{doacaoId}}",
+                "estado"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"concluido\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Reativar anúncio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/anuncios/{{anuncioId}}/estado",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "anuncios",
+                "{{anuncioId}}",
+                "estado"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"ativo\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Exemplos de erro",
+      "description": "Respostas de erro no formato { mensagem, campos }.",
+      "item": [
+        {
+          "name": "Cadastro com e-mail fora do domínio (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"erro no campo email\", () => pm.expect(pm.response.json().campos).to.have.property(\"email\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/cadastro",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "cadastro"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Fulano\",\n  \"email\": \"fulano@gmail.com\",\n  \"senha\": \"123\",\n  \"cursoId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Login com senha errada (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"ana.silva@academico.ifpb.edu.br\",\n  \"senha\": \"errada\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Sem token (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/usuarios/eu",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "usuarios",
+                "eu"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Tamanho de página inválido (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/anuncios?modalidade=venda&tamanho=7",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "anuncios"
+              ],
+              "query": [
+                {
+                  "key": "modalidade",
+                  "value": "venda"
+                },
+                {
+                  "key": "tamanho",
+                  "value": "7"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Doações ordenadas por preço (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/anuncios?modalidade=doacao&ordem=preco",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "anuncios"
+              ],
+              "query": [
+                {
+                  "key": "modalidade",
+                  "value": "doacao"
+                },
+                {
+                  "key": "ordem",
+                  "value": "preco"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Venda sem preço (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/anuncios",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "anuncios"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "titulo",
+                  "type": "text",
+                  "value": "Fone de ouvido com fio"
+                },
+                {
+                  "key": "descricao",
+                  "type": "text",
+                  "value": "Fone P2, funcionando perfeitamente."
+                },
+                {
+                  "key": "estadoConservacao",
+                  "type": "text",
+                  "value": "usado"
+                },
+                {
+                  "key": "categoriaId",
+                  "type": "text",
+                  "value": "1"
+                },
+                {
+                  "key": "localEntrega",
+                  "type": "text",
+                  "value": "Biblioteca"
+                },
+                {
+                  "key": "modalidade",
+                  "type": "text",
+                  "value": "venda"
+                },
+                {
+                  "key": "fotos",
+                  "type": "file",
+                  "src": "backend/db/fotos/anuncio-01-1.jpg"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Estado 'vendido' em doação (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/anuncios/{{doacaoId}}/estado",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "anuncios",
+                "{{doacaoId}}",
+                "estado"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"vendido\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Editar anúncio de outro estudante (403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 403\", () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/anuncios/13",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "anuncios",
+                "13"
+              ]
+            },
+            "description": "O anúncio 13 é da Carla; o token da coleção é da Ana.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "titulo",
+                  "type": "text",
+                  "value": "Fone de ouvido com fio"
+                },
+                {
+                  "key": "descricao",
+                  "type": "text",
+                  "value": "Fone P2, funcionando perfeitamente."
+                },
+                {
+                  "key": "estadoConservacao",
+                  "type": "text",
+                  "value": "usado"
+                },
+                {
+                  "key": "categoriaId",
+                  "type": "text",
+                  "value": "1"
+                },
+                {
+                  "key": "localEntrega",
+                  "type": "text",
+                  "value": "Biblioteca"
+                },
+                {
+                  "key": "modalidade",
+                  "type": "text",
+                  "value": "venda"
+                },
+                {
+                  "key": "preco",
+                  "type": "text",
+                  "value": "10"
+                },
+                {
+                  "key": "fotosMantidas",
+                  "type": "text",
+                  "value": "19"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Anúncio inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/anuncios/999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "anuncios",
+                "999999"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

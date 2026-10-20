@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: marketplace
+  datasource:
+    url: ${DB_URL:jdbc:sqlite:./data/marketplace.db}
+    hikari:
+      maximum-pool-size: 4
+      data-source-properties:
+        foreign_keys: true
+        journal_mode: WAL
+        busy_timeout: 5000
+  sql:
+    init:
+      mode: never
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 60MB
+
+server:
+  tomcat:
+    # Lê o resto de um upload recusado antes de responder, para o navegador receber o 413
+    # (com o limite padrão de 2 MB, a conexão é fechada e o fetch falha sem status)
+    max-swallow-size: 100MB
+
+springdoc:
+  # Ligados de propósito: a documentação faz parte do que as equipes usam
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+  default-produces-media-type: application/json
+
+app:
+  carga-dir: ${CARGA_DIR:./db}
+  jwt:
+    segredo: ${JWT_SECRET}
+    expiracao-horas: ${JWT_EXPIRACAO_HORAS:24}
+  s3:
+    endpoint: ${S3_ENDPOINT:http://localhost:9000}
+    url-publica: ${S3_PUBLIC_URL:http://localhost:9000}
+    bucket: ${S3_BUCKET:marketplace}
+    access-key: ${S3_ACCESS_KEY}
+    secret-key: ${S3_SECRET_KEY}

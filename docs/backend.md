@@ -15,24 +15,24 @@ Decisões para a API fornecida pelo professor. Os requisitos do frontend estão 
 
 ## Docker Compose
 
-O [`docker-compose.yml`](../docker-compose.yml) da raiz sobe três serviços:
+O [`docker-compose.yml`](../docker-compose.yml) da raiz sobe dois serviços:
 
 | Serviço | O que faz | Porta |
 | --- | --- | --- |
 | `api` | API Spring Boot, construída a partir de `backend/` | 8080 |
-| `minio` | Armazenamento das fotos | 9000 (API do MinIO) e 9001 (console) |
-| `minio-init` | Cria o bucket `marketplace` e encerra | — |
+| `armazenamento` | Armazenamento das fotos, com [RustFS](https://rustfs.com) (compatível com S3) | 9000 (API S3) e 9001 (console, em `/rustfs/console/`) |
 
 - O banco SQLite fica em `/app/data/marketplace.db`, no volume `dados`. As fotos ficam no volume `fotos`.
-- A pasta `backend/db` é montada em `/app/db`. A API aplica `schema.sql` e `carga.sql` dessa pasta quando o banco está vazio.
-- Variáveis de ambiente: `.env` (copiado de [`.env.example`](../.env.example)) com credenciais do MinIO, segredo e expiração do JWT e chaves VAPID; o compose acrescenta `DB_URL`, `CARGA_DIR`, `MINIO_ENDPOINT`, `MINIO_PUBLIC_URL` e `MINIO_BUCKET`.
-- A API fala com o MinIO por `MINIO_ENDPOINT` (`http://minio:9000`), mas assina as URLs das fotos com `MINIO_PUBLIC_URL` (`http://localhost:9000`). A assinatura depende do host, e é esse endereço que o navegador acessa.
+- A pasta `backend/db` é montada em `/app/db`. A API aplica `schema.sql` e `carga.sql` dessa pasta quando o banco está vazio e envia para o armazenamento as fotos de exemplo de `backend/db/fotos/`.
+- Ao iniciar, a API cria o bucket `marketplace` se ele ainda não existir.
+- Variáveis de ambiente: `.env` (copiado de [`.env.example`](../.env.example)) com as credenciais do armazenamento (`S3_ACCESS_KEY` e `S3_SECRET_KEY`), segredo e expiração do JWT e chaves VAPID; o compose acrescenta `DB_URL`, `CARGA_DIR`, `S3_ENDPOINT`, `S3_PUBLIC_URL` e `S3_BUCKET`.
+- A API fala com o armazenamento por `S3_ENDPOINT` (`http://armazenamento:9000`), mas assina as URLs das fotos com `S3_PUBLIC_URL` (`http://localhost:9000`). A assinatura depende do host, e é esse endereço que o navegador acessa.
 
 ## Dados
 
 - **Estado de conservação:** lista fixa de valores, guardada como enum: `novo`, `seminovo` e `usado`.
 - **Contato:** telefone/WhatsApp, opcional no cadastro.
-- **Categorias:** só o nome. O script de carga traz a categoria de exemplo "Eletrônicos"; cada equipe troca ou acrescenta as suas.
+- **Categorias:** nome e `slug`. O `slug` é o identificador usado na URL e no filtro da busca (`?categoria=eletronicos`): minúsculas, sem acentos e com hífen no lugar de espaços. O script de carga traz a categoria de exemplo "Eletrônicos" (`eletronicos`); cada equipe troca ou acrescenta as suas.
 - **Cursos:** carregados pelo script de carga:
     - Análise e Desenvolvimento de Sistemas
     - Engenharia de Controle e Automação
@@ -47,9 +47,9 @@ O [`docker-compose.yml`](../docker-compose.yml) da raiz sobe três serviços:
 
 ## Fotos
 
-- Fotos de anúncios e de perfil ficam em um MinIO simples, que sobe junto com a API.
+- Fotos de anúncios e de perfil ficam no serviço `armazenamento` (RustFS, compatível com S3), que sobe junto com a API.
 - As respostas da API trazem URLs assinadas para as fotos, prontas para usar em `<img>`.
-- O frontend envia as fotos para a própria API (multipart), que as grava no MinIO. As URLs assinadas expiram em 1 hora.
+- O frontend envia as fotos para a própria API (multipart), que as grava no armazenamento. As URLs assinadas expiram em 1 hora.
 
 ## Paginação
 
