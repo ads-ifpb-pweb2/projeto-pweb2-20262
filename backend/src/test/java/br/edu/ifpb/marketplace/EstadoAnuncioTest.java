@@ -12,14 +12,14 @@ import br.edu.ifpb.marketplace.Api.Formulario;
 
 class EstadoAnuncioTest extends IntegracaoBase {
 
-    private String carla;
+    private String dono;
     private long doacao;
     private int foto;
 
     @BeforeEach
     void criarDoacao() {
-        carla = login(CARLA);
-        Resposta r = api.multipart(HttpMethod.POST, "/anuncios", carla, new Formulario()
+        dono = login(ESTUDANTE);
+        Resposta r = api.multipart(HttpMethod.POST, "/anuncios", dono, new Formulario()
                 .campo("titulo", "Cabo USB")
                 .campo("descricao", "Cabo USB-C")
                 .campo("modalidade", "doacao")
@@ -36,23 +36,23 @@ class EstadoAnuncioTest extends IntegracaoBase {
     }
 
     private List<Integer> doacoesNaBusca() {
-        return api.get("/anuncios?modalidade=doacao&tamanho=50", carla).json("$.itens[*].id");
+        return api.get("/anuncios?modalidade=doacao&tamanho=50", dono).json("$.itens[*].id");
     }
 
     @Test
     void anuncioConcluidoSaiDaBuscaEVoltaQuandoReativado() {
         assertThat(doacoesNaBusca()).contains((int) doacao);
 
-        assertThat(alterar(doacao, carla, "concluido").<String>json("$.estado")).isEqualTo("concluido");
+        assertThat(alterar(doacao, dono, "concluido").<String>json("$.estado")).isEqualTo("concluido");
         assertThat(doacoesNaBusca()).doesNotContain((int) doacao);
 
-        assertThat(alterar(doacao, carla, "ativo").<String>json("$.estado")).isEqualTo("ativo");
+        assertThat(alterar(doacao, dono, "ativo").<String>json("$.estado")).isEqualTo("ativo");
         assertThat(doacoesNaBusca()).contains((int) doacao);
     }
 
     @Test
     void vendidoNaoExisteEmDoacao() {
-        Resposta r = alterar(doacao, carla, "vendido");
+        Resposta r = alterar(doacao, dono, "vendido");
 
         assertThat(r.status()).isEqualTo(400);
         assertThat(r.<String>json("$.campos.estado")).isEqualTo("Em doações, o estado final é 'concluido'.");
@@ -60,24 +60,24 @@ class EstadoAnuncioTest extends IntegracaoBase {
 
     @Test
     void concluidoNaoExisteEmVenda() {
-        assertThat(alterar(13, login(CARLA), "concluido").status()).isEqualTo(400);
+        assertThat(alterar(13, dono, "concluido").status()).isEqualTo(400);
     }
 
     @Test
     void estadoDesconhecidoDevolve400() {
-        assertThat(alterar(doacao, carla, "xyz").status()).isEqualTo(400);
+        assertThat(alterar(doacao, dono, "xyz").status()).isEqualTo(400);
     }
 
     @Test
     void soOAnuncianteAlteraOEstado() {
-        assertThat(alterar(doacao, login(ANA), "pausado").status()).isEqualTo(403);
+        assertThat(alterar(doacao, outroEstudante(), "pausado").status()).isEqualTo(403);
     }
 
     @Test
     void naoTrocaParaVendaComEstadoQueSoExisteEmDoacao() {
-        alterar(doacao, carla, "concluido");
+        alterar(doacao, dono, "concluido");
 
-        Resposta r = api.multipart(HttpMethod.PUT, "/anuncios/" + doacao, carla, new Formulario()
+        Resposta r = api.multipart(HttpMethod.PUT, "/anuncios/" + doacao, dono, new Formulario()
                 .campo("titulo", "Cabo USB")
                 .campo("descricao", "Cabo USB-C")
                 .campo("modalidade", "venda")

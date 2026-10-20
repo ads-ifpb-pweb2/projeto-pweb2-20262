@@ -13,11 +13,11 @@ import br.edu.ifpb.marketplace.Api.Formulario;
 
 class AnuncioTest extends IntegracaoBase {
 
-    private String carla;
+    private String dono;
 
     @BeforeEach
     void entrar() {
-        carla = login(CARLA);
+        dono = login(ESTUDANTE);
     }
 
     /** Campos válidos de um anúncio, sem modalidade, preço e fotos. */
@@ -39,7 +39,7 @@ class AnuncioTest extends IntegracaoBase {
     }
 
     private Resposta criar(Formulario formulario) {
-        return api.multipart(HttpMethod.POST, "/anuncios", carla, formulario);
+        return api.multipart(HttpMethod.POST, "/anuncios", dono, formulario);
     }
 
     private Resposta editar(long id, String token, Formulario formulario) {
@@ -48,23 +48,23 @@ class AnuncioTest extends IntegracaoBase {
 
     @Test
     void detalheComFotosEAnunciante() throws Exception {
-        Resposta r = api.get("/anuncios/7", carla);
+        Resposta r = api.get("/anuncios/7", dono);
 
         assertThat(r.status()).isEqualTo(200);
         assertThat(r.<List<Boolean>>json("$.fotos[*].capa")).containsExactly(true, false, false);
-        assertThat(r.<String>json("$.anunciante.nome")).isEqualTo("Bruno Costa");
+        assertThat(r.<String>json("$.anunciante.nome")).isEqualTo("Estudante de Exemplo");
         assertThat(r.<String>json("$.categoria.slug")).isEqualTo("eletronicos");
         assertThat(acessar(r.json("$.fotos[1].url"))).isEqualTo("200 image/jpeg");
     }
 
     @Test
     void detalheDeAnuncioNaoAtivoDeOutroEstudante() {
-        assertThat(api.get("/anuncios/5", carla).<String>json("$.estado")).isEqualTo("vendido");
+        assertThat(api.get("/anuncios/5", outroEstudante()).<String>json("$.estado")).isEqualTo("vendido");
     }
 
     @Test
     void detalheInexistenteDevolve404() {
-        assertThat(api.get("/anuncios/999", carla).status()).isEqualTo(404);
+        assertThat(api.get("/anuncios/999", dono).status()).isEqualTo(404);
     }
 
     @Test
@@ -77,7 +77,7 @@ class AnuncioTest extends IntegracaoBase {
         assertThat(r.<List<Boolean>>json("$.fotos[*].capa")).containsExactly(false, true);
         assertThat(r.<String>json("$.capaUrl")).isNotNull();
         assertThat(acessar(r.json("$.fotos[0].url"))).isEqualTo("200 image/jpeg");
-        assertThat(r.<Integer>json("$.anunciante.id")).isEqualTo(3);
+        assertThat(r.<Integer>json("$.anunciante.id")).isEqualTo(1);
     }
 
     @Test
@@ -145,7 +145,7 @@ class AnuncioTest extends IntegracaoBase {
         long id = criado.<Integer>json("$.id");
         int foto = criado.json("$.fotos[0].id");
 
-        Resposta r = editar(id, login(ANA), venda(0).campo("fotosMantidas", foto));
+        Resposta r = editar(id, outroEstudante(), venda(0).campo("fotosMantidas", foto));
 
         assertThat(r.status()).isEqualTo(403);
     }
@@ -158,7 +158,7 @@ class AnuncioTest extends IntegracaoBase {
         int segunda = criado.json("$.fotos[1].id");
         String urlPrimeira = criado.json("$.fotos[0].url");
 
-        Resposta r = editar(id, carla, campos()
+        Resposta r = editar(id, dono, campos()
                 .campo("titulo", "Mochila nova")
                 .campo("modalidade", "venda")
                 .campo("preco", 120)
@@ -181,7 +181,7 @@ class AnuncioTest extends IntegracaoBase {
         int capa = criado.json("$.fotos[1].id");
         int outra = criado.json("$.fotos[0].id");
 
-        Resposta r = editar(id, carla, venda(0).lista("fotosMantidas", outra, capa));
+        Resposta r = editar(id, dono, venda(0).lista("fotosMantidas", outra, capa));
 
         assertThat(r.<List<Integer>>json("$.fotos[*].id")).containsExactly(outra, capa);
         assertThat(r.<List<Boolean>>json("$.fotos[*].capa")).containsExactly(false, true);
@@ -193,12 +193,12 @@ class AnuncioTest extends IntegracaoBase {
         long id = criado.<Integer>json("$.id");
         int foto = criado.json("$.fotos[0].id");
 
-        assertThat(editar(id, carla, venda(0)).<String>json("$.campos.fotos")).contains("1 a 10 fotos");
-        assertThat(editar(id, carla, venda(0).campo("fotosMantidas", 1)).<String>json("$.campos.fotosMantidas"))
+        assertThat(editar(id, dono, venda(0)).<String>json("$.campos.fotos")).contains("1 a 10 fotos");
+        assertThat(editar(id, dono, venda(0).campo("fotosMantidas", 1)).<String>json("$.campos.fotosMantidas"))
                 .isEqualTo("A foto 1 não pertence a este anúncio.");
-        assertThat(editar(id, carla, venda(1).campo("fotosMantidas", foto).campo("capaId", foto).campo("capaIndice", 0))
+        assertThat(editar(id, dono, venda(1).campo("fotosMantidas", foto).campo("capaId", foto).campo("capaIndice", 0))
                 .<String>json("$.mensagem")).isEqualTo("Informe capaId ou capaIndice, não os dois.");
-        assertThat(editar(id, carla, venda(0).campo("fotosMantidas", foto).campo("capaId", 1))
+        assertThat(editar(id, dono, venda(0).campo("fotosMantidas", foto).campo("capaId", 1))
                 .<String>json("$.campos.capaId")).isEqualTo("A capa precisa ser uma das fotos mantidas.");
     }
 
@@ -208,7 +208,7 @@ class AnuncioTest extends IntegracaoBase {
         long id = criado.<Integer>json("$.id");
         int foto = criado.json("$.fotos[0].id");
 
-        Resposta r = editar(id, carla, campos().campo("modalidade", "doacao").campo("fotosMantidas", foto));
+        Resposta r = editar(id, dono, campos().campo("modalidade", "doacao").campo("fotosMantidas", foto));
 
         assertThat(r.<String>json("$.modalidade")).isEqualTo("doacao");
         assertThat(r.<Object>json("$.preco")).isNull();

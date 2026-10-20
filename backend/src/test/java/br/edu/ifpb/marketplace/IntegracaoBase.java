@@ -8,6 +8,7 @@ import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,9 +29,7 @@ import org.testcontainers.containers.wait.strategy.Wait;
 public abstract class IntegracaoBase {
 
     protected static final String SENHA_CARGA = "senha123";
-    protected static final String ANA = "ana.silva@academico.ifpb.edu.br";
-    protected static final String BRUNO = "bruno.costa@academico.ifpb.edu.br";
-    protected static final String CARLA = "carla.souza@academico.ifpb.edu.br";
+    protected static final String ESTUDANTE = "estudante@academico.ifpb.edu.br";
 
     private static final String CHAVE = "marketplace";
     private static final String SEGREDO = "marketplace123";
@@ -45,6 +44,8 @@ public abstract class IntegracaoBase {
     static {
         RUSTFS.start();
     }
+
+    private static final AtomicInteger CADASTROS = new AtomicInteger();
 
     private static final HttpClient HTTP = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build();
 
@@ -83,6 +84,13 @@ public abstract class IntegracaoBase {
     protected String login(String email) {
         return api.postJson("/auth/login", null, """
                 {"email": "%s", "senha": "%s"}""".formatted(email, SENHA_CARGA)).json("$.token");
+    }
+
+    /** Cadastra um estudante novo, sem anúncios, e devolve o token. */
+    protected String outroEstudante() {
+        return api.postJson("/auth/cadastro", null, """
+                {"nome": "Outro Estudante", "email": "outro.%d@academico.ifpb.edu.br", "senha": "%s", "cursoId": 2}"""
+                .formatted(CADASTROS.incrementAndGet(), SENHA_CARGA)).json("$.token");
     }
 
     /** Status e Content-Type de uma URL assinada, acessada como o navegador faria. */

@@ -1,0 +1,3 @@
+$kind: collection
+description: "Busca de vendas e doações: só anúncios ativos. Os parâmetros são os mesmos da query string das telas /vendas e /doacoes."
+order: 4000

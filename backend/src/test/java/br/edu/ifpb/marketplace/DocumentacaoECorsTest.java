@@ -50,7 +50,7 @@ class DocumentacaoECorsTest extends IntegracaoBase {
 
     @Test
     void caminhoInexistenteDevolve404EmJson() {
-        Resposta r = api.get("/nao-existe", login(ANA));
+        Resposta r = api.get("/nao-existe", login(ESTUDANTE));
 
         assertThat(r.status()).isEqualTo(404);
         assertThat(r.<String>json("$.mensagem")).isEqualTo("Caminho não encontrado.");

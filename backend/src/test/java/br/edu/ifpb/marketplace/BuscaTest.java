@@ -16,7 +16,7 @@ class BuscaTest extends IntegracaoBase {
 
     @BeforeEach
     void entrar() {
-        token = login(ANA);
+        token = login(ESTUDANTE);
     }
 
     private Resposta buscar(String query) {

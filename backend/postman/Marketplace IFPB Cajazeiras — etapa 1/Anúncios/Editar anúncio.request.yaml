@@ -1,0 +1,44 @@
+$kind: http-request
+description: Envia todos os campos de novo. `fotosMantidas` (pode repetir o campo) lista as fotos atuais que continuam; as outras são removidas. `fotos` traz as novas. A capa é `capaId` (uma foto mantida) ou `capaIndice` (posição em `fotos`).
+url: "{{baseUrl}}/anuncios/{{anuncioId}}"
+method: PUT
+body:
+  type: formdata
+  content:
+    - type: text
+      key: titulo
+      value: Fone de ouvido com fio (baixei o preço)
+    - type: text
+      key: descricao
+      value: Fone P2, funcionando perfeitamente.
+    - type: text
+      key: estadoConservacao
+      value: usado
+    - type: text
+      key: categoriaId
+      value: "1"
+    - type: text
+      key: localEntrega
+      value: Biblioteca
+    - type: text
+      key: modalidade
+      value: venda
+    - type: text
+      key: preco
+      value: "30"
+    - type: text
+      key: fotosMantidas
+      value: "{{fotoId}}"
+    - type: file
+      key: fotos
+      src: backend/db/fotos/anuncio-03-1.jpg
+    - type: text
+      key: capaIndice
+      value: "0"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("status 200", () => pm.response.to.have.status(200));
+      pm.test("ficou com 2 fotos", () => pm.expect(pm.response.json().fotos).to.have.length(2));
+    language: text/javascript
+order: 4000

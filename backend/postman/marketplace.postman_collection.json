@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Marketplace IFPB Cajazeiras — etapa 1",
-    "description": "Requisições de exemplo para a API da etapa 1. Documentação completa: http://localhost:8080/swagger-ui.html\n\n**Como usar**\n\n1. Suba a API (`docker compose up --build`, na raiz do repositório).\n2. Rode **Autenticação → Login** primeiro: o token fica na variável `token` da coleção e é usado em todas as requisições que exigem autenticação.\n3. **Anúncios → Criar anúncio de venda** guarda `anuncioId` e `fotoId`, usados no detalhe, na edição e na troca de estado.\n\n**Fotos:** os campos de arquivo apontam para `backend/db/fotos/`, com caminho relativo à raiz do repositório. No Postman, defina a raiz do repositório em *Settings → General → Working directory* ou escolha os arquivos de novo em cada requisição. No Newman, use `--working-dir` com a raiz.\n\nA coleção inteira roda em ordem pelo Collection Runner ou com:\n\n`npx newman run backend/postman/marketplace.postman_collection.json --working-dir .`",
+    "description": "Requisições de exemplo para a API da etapa 1. Documentação completa: http://localhost:8080/swagger-ui.html\n\n**Como usar**\n\n1. Suba a API (`docker compose up --build`, na raiz do repositório).\n2. Rode a pasta **Autenticação** primeiro. O **Login** entra com o estudante de exemplo e guarda o token na variável `token`, usada nas requisições que exigem autenticação. O **Cadastro** cria outro estudante e guarda o token dele em `outroToken`, usado nos exemplos com outro estudante.\n3. **Anúncios → Criar anúncio de venda** guarda `anuncioId` e `fotoId`, usados no detalhe, na edição e na troca de estado.\n\n**Fotos:** os campos de arquivo apontam para `backend/db/fotos/`, com caminho relativo à raiz do repositório. No Postman, defina a raiz do repositório em *Settings → General → Working directory* ou escolha os arquivos de novo em cada requisição. No Newman, use `--working-dir` com a raiz.\n\n**Formatos:** a mesma coleção está em `backend/postman/` em JSON (`marketplace.postman_collection.json`), para o *Import* do Postman e para o Newman, e em YAML (pasta `Marketplace IFPB Cajazeiras — etapa 1`), o formato que o Postman usa ao abrir o repositório como workspace local.\n\nA coleção inteira roda em ordem pelo Collection Runner ou com:\n\n`npx newman run backend/postman/marketplace.postman_collection.json --working-dir .`",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -25,6 +25,14 @@
     },
     {
       "key": "usuarioId",
+      "value": ""
+    },
+    {
+      "key": "outroToken",
+      "value": ""
+    },
+    {
+      "key": "outroUsuarioId",
       "value": ""
     },
     {
@@ -150,7 +158,10 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));"
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));",
+                  "const corpo = pm.response.json();",
+                  "pm.collectionVariables.set(\"outroToken\", corpo.token);",
+                  "pm.collectionVariables.set(\"outroUsuarioId\", corpo.usuario.id);"
                 ]
               }
             },
@@ -182,7 +193,7 @@
                 "cadastro"
               ]
             },
-            "description": "Cadastra um estudante e devolve a sessão. O e-mail é gerado a cada execução para não repetir.",
+            "description": "Cadastra um estudante e devolve a sessão. O e-mail é gerado a cada execução para não repetir. Guarda o token e o id do estudante em `outroToken` e `outroUsuarioId`.",
             "auth": {
               "type": "noauth"
             },
@@ -231,13 +242,13 @@
                 "login"
               ]
             },
-            "description": "Login da Ana, da carga de exemplo. Guarda o token e o id do usuário nas variáveis da coleção.",
+            "description": "Login do estudante de exemplo, da carga. Guarda o token e o id do usuário nas variáveis da coleção.",
             "auth": {
               "type": "noauth"
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"ana.silva@academico.ifpb.edu.br\",\n  \"senha\": \"senha123\"\n}",
+              "raw": "{\n  \"email\": \"estudante@academico.ifpb.edu.br\",\n  \"senha\": \"senha123\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -314,7 +325,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nome\": \"Ana Silva\",\n  \"cursoId\": 1,\n  \"telefone\": \"(83) 99999-0001\"\n}",
+              "raw": "{\n  \"nome\": \"Estudante de Exemplo\",\n  \"cursoId\": 1,\n  \"telefone\": \"(83) 99999-0001\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -357,7 +368,7 @@
                 {
                   "key": "foto",
                   "type": "file",
-                  "src": "backend/db/fotos/usuario-ana.jpg"
+                  "src": "backend/db/fotos/usuario-estudante.jpg"
                 }
               ]
             }
@@ -380,15 +391,16 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/usuarios/2",
+              "raw": "{{baseUrl}}/usuarios/{{outroUsuarioId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "usuarios",
-                "2"
+                "{{outroUsuarioId}}"
               ]
-            }
+            },
+            "description": "Perfil do estudante criado no Cadastro. Não mostra o e-mail."
           }
         },
         {
@@ -431,7 +443,7 @@
           }
         },
         {
-          "name": "Anúncios de outro estudante (só ativos)",
+          "name": "Anúncios vistos por outro estudante (só ativos)",
           "event": [
             {
               "listen": "test",
@@ -447,13 +459,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/usuarios/2/anuncios?pagina=1&tamanho=5",
+              "raw": "{{baseUrl}}/usuarios/{{usuarioId}}/anuncios?pagina=1&tamanho=5",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "usuarios",
-                "2",
+                "{{usuarioId}}",
                 "anuncios"
               ],
               "query": [
@@ -464,6 +476,17 @@
                 {
                   "key": "tamanho",
                   "value": "5"
+                }
+              ]
+            },
+            "description": "Os anúncios do estudante de exemplo, com o token do estudante do Cadastro: só os ativos aparecem.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{outroToken}}",
+                  "type": "string"
                 }
               ]
             }
@@ -1301,7 +1324,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"ana.silva@academico.ifpb.edu.br\",\n  \"senha\": \"errada\"\n}",
+              "raw": "{\n  \"email\": \"estudante@academico.ifpb.edu.br\",\n  \"senha\": \"errada\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1551,7 +1574,17 @@
                 "13"
               ]
             },
-            "description": "O anúncio 13 é da Carla; o token da coleção é da Ana.",
+            "description": "O anúncio 13 é do estudante de exemplo; esta requisição usa o token do estudante do Cadastro.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{outroToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "body": {
               "mode": "formdata",
               "formdata": [

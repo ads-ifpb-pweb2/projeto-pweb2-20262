@@ -22,14 +22,12 @@ INSERT INTO categoria (id, nome, slug) VALUES
 
 -- ---------------------------------------------------------------------------
 -- Dados de exemplo, para testar a busca. Pode apagar daqui para baixo.
--- Os três estudantes usam a senha "senha123".
+-- O estudante de exemplo usa a senha "senha123".
 -- As fotos ficam em backend/db/fotos/ e são enviadas ao armazenamento com a chave carga/<arquivo>.
 -- ---------------------------------------------------------------------------
 
 INSERT INTO usuario (id, nome, email, senha_hash, papel, curso_id, telefone, foto_chave, criado_em) VALUES
-  (1, 'Ana Silva',   'ana.silva@academico.ifpb.edu.br',   '$2y$10$gSKL.siB69Xlo8mvaO17QOXct0eEke9fMD7DTL5pmmOoGCBNtS8BW', 'estudante', 1, '(83) 99999-0001', 'carga/usuario-ana.jpg',   '2026-09-01T12:00:00Z'),
-  (2, 'Bruno Costa', 'bruno.costa@academico.ifpb.edu.br', '$2y$10$gSKL.siB69Xlo8mvaO17QOXct0eEke9fMD7DTL5pmmOoGCBNtS8BW', 'estudante', 2, '(83) 99999-0002', 'carga/usuario-bruno.jpg', '2026-09-02T12:00:00Z'),
-  (3, 'Carla Souza', 'carla.souza@academico.ifpb.edu.br', '$2y$10$gSKL.siB69Xlo8mvaO17QOXct0eEke9fMD7DTL5pmmOoGCBNtS8BW', 'estudante', 7, NULL,              NULL,                      '2026-09-03T12:00:00Z');
+  (1, 'Estudante de Exemplo', 'estudante@academico.ifpb.edu.br', '$2y$10$gSKL.siB69Xlo8mvaO17QOXct0eEke9fMD7DTL5pmmOoGCBNtS8BW', 'estudante', 1, '(83) 99999-0001', 'carga/usuario-estudante.jpg', '2026-09-01T12:00:00Z');
 
 -- Preço em centavos (8000 = R$ 80,00); NULL em doações.
 -- Estados: ativo, pausado, reservado, vendido (só vendas) e concluido (só doações).
@@ -40,18 +38,18 @@ INSERT INTO anuncio (id, usuario_id, categoria_id, titulo, descricao, modalidade
   (4,  1, 1, 'Carregador de notebook', 'Carregador universal 90 W com várias pontas. Funciona, mas o cabo tem marcas de uso.', 'doacao', NULL, 'usado', 'Cantina', 'ativo', '2026-09-12T11:45:00Z', '2026-09-12T11:45:00Z'),
   (5,  1, 1, 'Calculadora científica', 'Calculadora científica, ideal para Cálculo e Física.', 'venda', 6000, 'usado', 'Bloco de Matemática', 'vendido', '2026-09-14T09:00:00Z', '2026-09-25T09:00:00Z'),
   (6,  1, 1, 'Pen drive 16 GB', 'Pen drive novo, ainda na embalagem.', 'doacao', NULL, 'novo', 'Biblioteca', 'pausado', '2026-09-15T16:20:00Z', '2026-09-18T16:20:00Z'),
-  (7,  2, 1, 'Arduino Uno com kit de sensores', 'Arduino Uno com protoboard, sensores de temperatura, ultrassom e LDR, e cabos.', 'venda', 12000, 'seminovo', 'Laboratório de Automação', 'ativo', '2026-09-18T14:00:00Z', '2026-09-18T14:00:00Z'),
-  (8,  2, 1, 'Raspberry Pi 4 (4 GB)', 'Raspberry Pi 4 com case, fonte oficial e cartão de 32 GB.', 'venda', 35000, 'seminovo', 'Laboratório de Automação', 'ativo', '2026-09-22T10:00:00Z', '2026-09-22T10:00:00Z'),
-  (9,  2, 1, 'Multímetro digital', 'Multímetro com pontas de prova. Mede tensão, corrente, resistência e continuidade.', 'venda', 7000, 'usado', 'Bloco de Eletromecânica', 'ativo', '2026-09-25T17:30:00Z', '2026-09-25T17:30:00Z'),
-  (10, 2, 1, 'Cabo HDMI 2 m', 'Cabo HDMI de 2 metros, sem uso.', 'doacao', NULL, 'novo', 'Portaria principal', 'ativo', '2026-09-28T08:15:00Z', '2026-09-28T08:15:00Z'),
-  (11, 2, 1, 'Monitor 22 polegadas', 'Monitor Full HD de 22 polegadas com entrada HDMI e VGA. Sem pixels mortos.', 'venda', 45000, 'usado', 'Combinar pelo chat', 'ativo', '2026-10-01T19:00:00Z', '2026-10-01T19:00:00Z'),
-  (12, 2, 1, 'Protoboard e jumpers', 'Protoboard de 830 pontos com cerca de 60 jumpers.', 'doacao', NULL, 'usado', 'Laboratório de Automação', 'concluido', '2026-10-02T13:00:00Z', '2026-10-06T13:00:00Z'),
-  (13, 3, 1, 'Notebook Lenovo IdeaPad', 'Notebook com Core i5, 8 GB de RAM e SSD de 256 GB. Bateria dura cerca de 3 horas.', 'venda', 180000, 'usado', 'Bloco de Informática, à tarde', 'ativo', '2026-10-04T15:40:00Z', '2026-10-04T15:40:00Z'),
-  (14, 3, 1, 'Webcam Full HD', 'Webcam 1080p com microfone embutido.', 'venda', 9000, 'seminovo', 'Biblioteca', 'ativo', '2026-10-07T11:00:00Z', '2026-10-07T11:00:00Z'),
-  (15, 3, 1, 'Caixa de som portátil', 'Caixa de som Bluetooth à prova de respingos.', 'venda', 11000, 'novo', 'Cantina', 'pausado', '2026-10-09T12:30:00Z', '2026-10-10T12:30:00Z'),
-  (16, 3, 1, 'Mouse pad gamer', 'Mouse pad grande, 80 x 30 cm.', 'doacao', NULL, 'seminovo', 'Bloco de Informática', 'ativo', '2026-10-11T09:45:00Z', '2026-10-11T09:45:00Z'),
-  (17, 3, 1, 'Fonte de alimentação 12 V', 'Fonte 12 V 2 A, serve para fitas de LED e roteadores.', 'doacao', NULL, 'usado', 'Portaria principal', 'ativo', '2026-10-14T14:10:00Z', '2026-10-14T14:10:00Z'),
-  (18, 3, 1, 'HD externo 1 TB', 'HD externo USB 3.0 de 1 TB, formatado.', 'venda', 20000, 'seminovo', 'Biblioteca', 'ativo', '2026-10-16T16:00:00Z', '2026-10-16T16:00:00Z');
+  (7,  1, 1, 'Arduino Uno com kit de sensores', 'Arduino Uno com protoboard, sensores de temperatura, ultrassom e LDR, e cabos.', 'venda', 12000, 'seminovo', 'Laboratório de Automação', 'ativo', '2026-09-18T14:00:00Z', '2026-09-18T14:00:00Z'),
+  (8,  1, 1, 'Raspberry Pi 4 (4 GB)', 'Raspberry Pi 4 com case, fonte oficial e cartão de 32 GB.', 'venda', 35000, 'seminovo', 'Laboratório de Automação', 'ativo', '2026-09-22T10:00:00Z', '2026-09-22T10:00:00Z'),
+  (9,  1, 1, 'Multímetro digital', 'Multímetro com pontas de prova. Mede tensão, corrente, resistência e continuidade.', 'venda', 7000, 'usado', 'Bloco de Eletromecânica', 'ativo', '2026-09-25T17:30:00Z', '2026-09-25T17:30:00Z'),
+  (10, 1, 1, 'Cabo HDMI 2 m', 'Cabo HDMI de 2 metros, sem uso.', 'doacao', NULL, 'novo', 'Portaria principal', 'ativo', '2026-09-28T08:15:00Z', '2026-09-28T08:15:00Z'),
+  (11, 1, 1, 'Monitor 22 polegadas', 'Monitor Full HD de 22 polegadas com entrada HDMI e VGA. Sem pixels mortos.', 'venda', 45000, 'usado', 'Combinar pelo chat', 'ativo', '2026-10-01T19:00:00Z', '2026-10-01T19:00:00Z'),
+  (12, 1, 1, 'Protoboard e jumpers', 'Protoboard de 830 pontos com cerca de 60 jumpers.', 'doacao', NULL, 'usado', 'Laboratório de Automação', 'concluido', '2026-10-02T13:00:00Z', '2026-10-06T13:00:00Z'),
+  (13, 1, 1, 'Notebook Lenovo IdeaPad', 'Notebook com Core i5, 8 GB de RAM e SSD de 256 GB. Bateria dura cerca de 3 horas.', 'venda', 180000, 'usado', 'Bloco de Informática, à tarde', 'ativo', '2026-10-04T15:40:00Z', '2026-10-04T15:40:00Z'),
+  (14, 1, 1, 'Webcam Full HD', 'Webcam 1080p com microfone embutido.', 'venda', 9000, 'seminovo', 'Biblioteca', 'ativo', '2026-10-07T11:00:00Z', '2026-10-07T11:00:00Z'),
+  (15, 1, 1, 'Caixa de som portátil', 'Caixa de som Bluetooth à prova de respingos.', 'venda', 11000, 'novo', 'Cantina', 'pausado', '2026-10-09T12:30:00Z', '2026-10-10T12:30:00Z'),
+  (16, 1, 1, 'Mouse pad gamer', 'Mouse pad grande, 80 x 30 cm.', 'doacao', NULL, 'seminovo', 'Bloco de Informática', 'ativo', '2026-10-11T09:45:00Z', '2026-10-11T09:45:00Z'),
+  (17, 1, 1, 'Fonte de alimentação 12 V', 'Fonte 12 V 2 A, serve para fitas de LED e roteadores.', 'doacao', NULL, 'usado', 'Portaria principal', 'ativo', '2026-10-14T14:10:00Z', '2026-10-14T14:10:00Z'),
+  (18, 1, 1, 'HD externo 1 TB', 'HD externo USB 3.0 de 1 TB, formatado.', 'venda', 20000, 'seminovo', 'Biblioteca', 'ativo', '2026-10-16T16:00:00Z', '2026-10-16T16:00:00Z');
 
 -- A primeira foto de cada anúncio é a capa (capa = 1).
 INSERT INTO anuncio_foto (anuncio_id, chave, ordem, capa) VALUES

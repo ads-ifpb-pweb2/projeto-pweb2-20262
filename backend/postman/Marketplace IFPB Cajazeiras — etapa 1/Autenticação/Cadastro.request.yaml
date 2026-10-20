@@ -1,0 +1,30 @@
+$kind: http-request
+description: Cadastra um estudante e devolve a sessão. O e-mail é gerado a cada execução para não repetir. Guarda o token e o id do estudante em `outroToken` e `outroUsuarioId`.
+url: "{{baseUrl}}/auth/cadastro"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "nome": "Estudante de Teste",
+      "email": "{{emailCadastro}}",
+      "senha": "senha123",
+      "cursoId": 1,
+      "telefone": "(83) 99999-1234"
+    }
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("status 201", () => pm.response.to.have.status(201));
+      const corpo = pm.response.json();
+      pm.collectionVariables.set("outroToken", corpo.token);
+      pm.collectionVariables.set("outroUsuarioId", corpo.usuario.id);
+    language: text/javascript
+  - type: beforeRequest
+    code: pm.collectionVariables.set("emailCadastro", `estudante.${Date.now()}@academico.ifpb.edu.br`);
+    language: text/javascript
+order: 1000

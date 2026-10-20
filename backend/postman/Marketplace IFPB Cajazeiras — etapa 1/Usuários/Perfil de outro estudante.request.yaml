@@ -1,0 +1,9 @@
+$kind: http-request
+description: Perfil do estudante criado no Cadastro. Não mostra o e-mail.
+url: "{{baseUrl}}/usuarios/{{outroUsuarioId}}"
+method: GET
+scripts:
+  - type: afterResponse
+    code: pm.test("status 200", () => pm.response.to.have.status(200));
+    language: text/javascript
+order: 4000

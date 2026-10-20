@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "Perfil público de um estudante")
 public record Perfil(
         long id,
-        @Schema(example = "Ana Silva") String nome,
+        @Schema(example = "Estudante de Exemplo") String nome,
         Curso curso,
         @Schema(example = "(83) 99999-0001", nullable = true) String telefone,
         @Schema(description = "URL assinada, válida por 1 hora", nullable = true) String fotoUrl) {

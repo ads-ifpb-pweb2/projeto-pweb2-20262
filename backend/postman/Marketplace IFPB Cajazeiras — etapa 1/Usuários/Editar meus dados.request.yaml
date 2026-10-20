@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{baseUrl}}/usuarios/eu"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "nome": "Estudante de Exemplo",
+      "cursoId": 1,
+      "telefone": "(83) 99999-0001"
+    }
+scripts:
+  - type: afterResponse
+    code: pm.test("status 200", () => pm.response.to.have.status(200));
+    language: text/javascript
+order: 2000

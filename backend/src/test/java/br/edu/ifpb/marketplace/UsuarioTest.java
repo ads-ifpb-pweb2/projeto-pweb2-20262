@@ -13,10 +13,10 @@ class UsuarioTest extends IntegracaoBase {
 
     @Test
     void devolveOUsuarioLogadoComFotoAssinada() throws Exception {
-        Resposta r = api.get("/usuarios/eu", login(ANA));
+        Resposta r = api.get("/usuarios/eu", login(ESTUDANTE));
 
         assertThat(r.status()).isEqualTo(200);
-        assertThat(r.<String>json("$.nome")).isEqualTo("Ana Silva");
+        assertThat(r.<String>json("$.nome")).isEqualTo("Estudante de Exemplo");
         assertThat(r.<String>json("$.curso.nome")).isEqualTo("Análise e Desenvolvimento de Sistemas");
         assertThat(r.<String>json("$.papel")).isEqualTo("estudante");
         assertThat(acessar(r.json("$.fotoUrl"))).isEqualTo("200 image/jpeg");
@@ -24,50 +24,51 @@ class UsuarioTest extends IntegracaoBase {
 
     @Test
     void mostraOPerfilDeOutroEstudanteSemEmail() {
-        Resposta r = api.get("/usuarios/3", login(ANA));
+        Resposta r = api.get("/usuarios/1", outroEstudante());
 
         assertThat(r.status()).isEqualTo(200);
-        assertThat(r.<String>json("$.nome")).isEqualTo("Carla Souza");
-        assertThat(r.<String>json("$.curso.nome")).isEqualTo("Técnico Integrado em Informática");
+        assertThat(r.<String>json("$.nome")).isEqualTo("Estudante de Exemplo");
+        assertThat(r.<String>json("$.curso.nome")).isEqualTo("Análise e Desenvolvimento de Sistemas");
         assertThat(r.corpo()).doesNotContain("email");
     }
 
     @Test
     void perfilInexistenteDevolve404() {
-        assertThat(api.get("/usuarios/999", login(ANA)).status()).isEqualTo(404);
+        assertThat(api.get("/usuarios/999", login(ESTUDANTE)).status()).isEqualTo(404);
     }
 
     @Test
     void oDonoVeTodosOsSeusAnuncios() {
-        Resposta r = api.get("/usuarios/1/anuncios", login(ANA));
+        Resposta r = api.get("/usuarios/1/anuncios?tamanho=50", login(ESTUDANTE));
 
-        assertThat(r.<Integer>json("$.total")).isEqualTo(6);
+        assertThat(r.<Integer>json("$.total")).isEqualTo(18);
         assertThat(r.<List<String>>json("$.itens[*].estado"))
-                .contains("ativo", "pausado", "reservado", "vendido");
+                .contains("ativo", "pausado", "reservado", "vendido", "concluido");
     }
 
     @Test
     void osDemaisVeemSoOsAnunciosAtivos() {
-        Resposta r = api.get("/usuarios/1/anuncios", login(CARLA));
+        Resposta r = api.get("/usuarios/1/anuncios?tamanho=50", outroEstudante());
 
-        assertThat(r.<List<Integer>>json("$.itens[*].id")).containsExactly(4, 2, 1);
+        assertThat(r.<List<Integer>>json("$.itens[*].id"))
+                .containsExactly(18, 17, 16, 14, 13, 11, 10, 9, 8, 7, 4, 2, 1);
     }
 
     @Test
     void editaOsPropriosDados() {
-        Resposta r = api.putJson("/usuarios/eu", login(BRUNO), """
-                {"nome": "Bruno C.", "cursoId": 1, "telefone": "(83) 98888-0000"}""");
+        Resposta r = api.putJson("/usuarios/eu", outroEstudante(), """
+                {"nome": "Outro E.", "cursoId": 1, "telefone": "(83) 98888-0000"}""");
 
         assertThat(r.status()).isEqualTo(200);
-        assertThat(r.<String>json("$.nome")).isEqualTo("Bruno C.");
+        assertThat(r.<String>json("$.nome")).isEqualTo("Outro E.");
         assertThat(r.<Integer>json("$.curso.id")).isEqualTo(1);
         assertThat(r.<String>json("$.telefone")).isEqualTo("(83) 98888-0000");
     }
 
     @Test
     void editarComCursoInvalidoDevolve400() {
-        Resposta r = api.putJson("/usuarios/eu", login(BRUNO), """
-                {"nome": "Bruno", "cursoId": 50}""");
+        Resposta r = api.putJson("/usuarios/eu", outroEstudante(), """
+                {"nome": "Outro", "cursoId": 50}""");
 
         assertThat(r.status()).isEqualTo(400);
         assertThat(r.<String>json("$.campos.cursoId")).isEqualTo("Curso não encontrado.");
@@ -75,13 +76,13 @@ class UsuarioTest extends IntegracaoBase {
 
     @Test
     void enviaEDepoisTrocaAFotoDePerfil() throws Exception {
-        String token = login(CARLA);
+        String token = outroEstudante();
 
         Resposta primeira = api.multipart(HttpMethod.PUT, "/usuarios/eu/foto", token,
-                new Formulario().arquivo("foto", foto("usuario-bruno.jpg"), "eu.jpg"));
+                new Formulario().arquivo("foto", foto("usuario-estudante.jpg"), "eu.jpg"));
         String urlPrimeira = primeira.json("$.fotoUrl");
         Resposta segunda = api.multipart(HttpMethod.PUT, "/usuarios/eu/foto", token,
-                new Formulario().arquivo("foto", foto("usuario-ana.jpg"), "eu.jpg"));
+                new Formulario().arquivo("foto", foto("anuncio-01-1.jpg"), "eu.jpg"));
 
         assertThat(primeira.status()).isEqualTo(200);
         assertThat(acessar(segunda.json("$.fotoUrl"))).isEqualTo("200 image/jpeg");
@@ -90,7 +91,7 @@ class UsuarioTest extends IntegracaoBase {
 
     @Test
     void fotoDePerfilQueNaoEImagemDevolve400() {
-        Resposta r = api.multipart(HttpMethod.PUT, "/usuarios/eu/foto", login(CARLA),
+        Resposta r = api.multipart(HttpMethod.PUT, "/usuarios/eu/foto", outroEstudante(),
                 new Formulario().arquivo("foto", "não sou imagem".getBytes(), "foto.jpg"));
 
         assertThat(r.status()).isEqualTo(400);

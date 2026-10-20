@@ -1,0 +1,40 @@
+$kind: http-request
+description: O anúncio 13 é do estudante de exemplo; esta requisição usa o token do estudante do Cadastro.
+url: "{{baseUrl}}/anuncios/13"
+method: PUT
+body:
+  type: formdata
+  content:
+    - type: text
+      key: titulo
+      value: Fone de ouvido com fio
+    - type: text
+      key: descricao
+      value: Fone P2, funcionando perfeitamente.
+    - type: text
+      key: estadoConservacao
+      value: usado
+    - type: text
+      key: categoriaId
+      value: "1"
+    - type: text
+      key: localEntrega
+      value: Biblioteca
+    - type: text
+      key: modalidade
+      value: venda
+    - type: text
+      key: preco
+      value: "10"
+    - type: text
+      key: fotosMantidas
+      value: "19"
+auth:
+  type: bearer
+  credentials:
+    token: "{{outroToken}}"
+scripts:
+  - type: afterResponse
+    code: pm.test("status 403", () => pm.response.to.have.status(403));
+    language: text/javascript
+order: 8000

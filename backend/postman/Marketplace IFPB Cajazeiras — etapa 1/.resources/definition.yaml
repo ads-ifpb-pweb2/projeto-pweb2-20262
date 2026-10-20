@@ -1,0 +1,32 @@
+$kind: collection
+description: |-
+  Requisições de exemplo para a API da etapa 1. Documentação completa: http://localhost:8080/swagger-ui.html
+
+  **Como usar**
+
+  1. Suba a API (`docker compose up --build`, na raiz do repositório).
+  2. Rode a pasta **Autenticação** primeiro. O **Login** entra com o estudante de exemplo e guarda o token na variável `token`, usada nas requisições que exigem autenticação. O **Cadastro** cria outro estudante e guarda o token dele em `outroToken`, usado nos exemplos com outro estudante.
+  3. **Anúncios → Criar anúncio de venda** guarda `anuncioId` e `fotoId`, usados no detalhe, na edição e na troca de estado.
+
+  **Fotos:** os campos de arquivo apontam para `backend/db/fotos/`, com caminho relativo à raiz do repositório. No Postman, defina a raiz do repositório em *Settings → General → Working directory* ou escolha os arquivos de novo em cada requisição. No Newman, use `--working-dir` com a raiz.
+
+  **Formatos:** a mesma coleção está em `backend/postman/` em JSON (`marketplace.postman_collection.json`), para o *Import* do Postman e para o Newman, e em YAML (pasta `Marketplace IFPB Cajazeiras — etapa 1`), o formato que o Postman usa ao abrir o repositório como workspace local.
+
+  A coleção inteira roda em ordem pelo Collection Runner ou com:
+
+  `npx newman run backend/postman/marketplace.postman_collection.json --working-dir .`
+variables:
+  baseUrl: http://localhost:8080
+  token: ""
+  usuarioId: ""
+  outroToken: ""
+  outroUsuarioId: ""
+  anuncioId: ""
+  fotoId: ""
+  doacaoId: ""
+auth:
+  - id: 34ef218e-56fa-4137-83ff-8d1ee5e944e0
+    type: bearer
+    name: bearer auth
+    credentials:
+      token: "{{token}}"

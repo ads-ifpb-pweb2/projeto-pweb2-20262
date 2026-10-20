@@ -1,0 +1,3 @@
+$kind: collection
+description: Respostas de erro no formato { mensagem, campos }.
+order: 6000

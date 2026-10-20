@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{baseUrl}}/cursos"
+method: GET
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("status 200", () => pm.response.to.have.status(200));
+      pm.test("10 cursos", () => pm.expect(pm.response.json()).to.have.length(10));
+    language: text/javascript
+order: 1000

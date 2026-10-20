@@ -1,0 +1,15 @@
+$kind: http-request
+description: multipart/form-data com o arquivo no campo `foto` (JPEG, PNG ou WebP, até 5 MB).
+url: "{{baseUrl}}/usuarios/eu/foto"
+method: PUT
+body:
+  type: formdata
+  content:
+    - type: file
+      key: foto
+      src: backend/db/fotos/usuario-estudante.jpg
+scripts:
+  - type: afterResponse
+    code: pm.test("status 200", () => pm.response.to.have.status(200));
+    language: text/javascript
+order: 3000

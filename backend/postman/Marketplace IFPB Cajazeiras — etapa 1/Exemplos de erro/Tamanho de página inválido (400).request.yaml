@@ -1,0 +1,11 @@
+$kind: http-request
+url: "{{baseUrl}}/anuncios?modalidade=venda&tamanho=7"
+method: GET
+queryParams:
+  modalidade: venda
+  tamanho: "7"
+scripts:
+  - type: afterResponse
+    code: pm.test("status 400", () => pm.response.to.have.status(400));
+    language: text/javascript
+order: 4000

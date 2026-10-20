@@ -32,21 +32,20 @@ Pré-requisito: [Docker](https://docs.docker.com/get-docker/) com o Docker Compo
    | Documentação da API (Swagger) | http://localhost:8080/swagger-ui.html |
    | Console do armazenamento (fotos) | http://localhost:9001/rustfs/console/ (`S3_ACCESS_KEY` e `S3_SECRET_KEY` do `.env`) |
 
-### Estudantes de exemplo
+### Estudante de exemplo
 
-A carga traz três estudantes, todos com a senha `senha123`, e anúncios de exemplo para testar a busca:
-
-| Nome | E-mail |
-| --- | --- |
-| Ana Silva | `ana.silva@academico.ifpb.edu.br` |
-| Bruno Costa | `bruno.costa@academico.ifpb.edu.br` |
-| Carla Souza | `carla.souza@academico.ifpb.edu.br` |
+A carga traz um estudante, dono dos anúncios de exemplo usados para testar a busca: e-mail `estudante@academico.ifpb.edu.br` e senha `senha123`. Para ver o sistema como outro estudante, cadastre-se em `POST /auth/cadastro`.
 
 No Swagger, faça login em `POST /auth/login`, copie o `token` da resposta e clique em **Authorize**.
 
 ### Postman
 
-A coleção [`backend/postman/marketplace.postman_collection.json`](backend/postman/marketplace.postman_collection.json) tem requisições de exemplo para todos os endpoints. Importe no Postman e rode primeiro **Autenticação → Login**: o token fica guardado na coleção. As requisições com foto usam os arquivos de `backend/db/fotos/`. Para o Postman encontrá-los, defina a raiz do repositório em *Settings → General → Working directory*.
+A pasta `backend/postman/` tem uma coleção com requisições de exemplo para todos os endpoints, em dois formatos com o mesmo conteúdo:
+
+- [`marketplace.postman_collection.json`](backend/postman/marketplace.postman_collection.json): use em **Import** no Postman e no Newman.
+- `Marketplace IFPB Cajazeiras — etapa 1/`: o formato YAML do Postman, com um arquivo por requisição. É o que o Postman lê quando o repositório é aberto como workspace local.
+
+Depois de abrir a coleção, rode primeiro a pasta **Autenticação**: o **Login** guarda o token do estudante de exemplo, e o **Cadastro** cria outro estudante para os exemplos que precisam de dois. As requisições com foto usam os arquivos de `backend/db/fotos/`. Para o Postman encontrá-los, defina a raiz do repositório em *Settings → General → Working directory*.
 
 Para rodar a coleção inteira pelo terminal, com a API no ar:
 

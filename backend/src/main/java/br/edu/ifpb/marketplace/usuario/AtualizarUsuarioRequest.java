@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 
 public record AtualizarUsuarioRequest(
         @NotBlank(message = "Obrigatório.") @Size(max = 100, message = "No máximo 100 caracteres.")
-        @Schema(example = "Ana Silva") String nome,
+        @Schema(example = "Estudante de Exemplo") String nome,
 
         @NotNull(message = "Obrigatório.")
         @Schema(example = "1") Long cursoId,

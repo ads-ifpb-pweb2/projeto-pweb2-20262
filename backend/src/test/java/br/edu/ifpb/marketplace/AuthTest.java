@@ -67,17 +67,17 @@ class AuthTest extends IntegracaoBase {
     @Test
     void loginComOsDadosDaCarga() {
         Resposta r = api.postJson("/auth/login", null, """
-                {"email": "%s", "senha": "senha123"}""".formatted(ANA));
+                {"email": "%s", "senha": "senha123"}""".formatted(ESTUDANTE));
 
         assertThat(r.status()).isEqualTo(200);
         assertThat(r.<String>json("$.token")).hasSizeGreaterThan(50);
-        assertThat(r.<String>json("$.usuario.nome")).isEqualTo("Ana Silva");
+        assertThat(r.<String>json("$.usuario.nome")).isEqualTo("Estudante de Exemplo");
     }
 
     @Test
     void loginComSenhaErradaDevolve401() {
         Resposta r = api.postJson("/auth/login", null, """
-                {"email": "%s", "senha": "errada"}""".formatted(ANA));
+                {"email": "%s", "senha": "errada"}""".formatted(ESTUDANTE));
 
         assertThat(r.status()).isEqualTo(401);
         assertThat(r.<String>json("$.mensagem")).isEqualTo("E-mail ou senha incorretos.");

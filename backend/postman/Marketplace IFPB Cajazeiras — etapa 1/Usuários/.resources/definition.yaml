@@ -1,0 +1,3 @@
+$kind: collection
+description: Usuário logado e perfis. Exigem token.
+order: 3000

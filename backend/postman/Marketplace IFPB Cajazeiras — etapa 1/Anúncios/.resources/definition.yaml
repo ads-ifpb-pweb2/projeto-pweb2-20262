@@ -1,0 +1,3 @@
+$kind: collection
+description: Criação, detalhe, edição e estado. Exigem token.
+order: 5000

@@ -1,0 +1,35 @@
+$kind: http-request
+description: Em doações, `preco` fica de fora.
+url: "{{baseUrl}}/anuncios"
+method: POST
+body:
+  type: formdata
+  content:
+    - type: text
+      key: titulo
+      value: Cabo de rede 3 m
+    - type: text
+      key: descricao
+      value: Cabo de rede Cat5e.
+    - type: text
+      key: estadoConservacao
+      value: usado
+    - type: text
+      key: categoriaId
+      value: "1"
+    - type: text
+      key: localEntrega
+      value: Portaria principal
+    - type: text
+      key: modalidade
+      value: doacao
+    - type: file
+      key: fotos
+      src: backend/db/fotos/anuncio-10-1.jpg
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("status 201", () => pm.response.to.have.status(201));
+      pm.collectionVariables.set("doacaoId", pm.response.json().id);
+    language: text/javascript
+order: 2000

@@ -1,0 +1,16 @@
+$kind: http-request
+url: "{{baseUrl}}/anuncios/{{doacaoId}}/estado"
+method: PATCH
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "estado": "concluido"
+    }
+scripts:
+  - type: afterResponse
+    code: pm.test("status 200", () => pm.response.to.have.status(200));
+    language: text/javascript
+order: 7000
