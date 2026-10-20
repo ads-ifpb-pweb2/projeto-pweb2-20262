@@ -40,12 +40,7 @@ No Swagger, faça login em `POST /auth/login`, copie o `token` da resposta e cli
 
 ### Postman
 
-A pasta `backend/postman/` tem uma coleção com requisições de exemplo para todos os endpoints, em dois formatos com o mesmo conteúdo:
-
-- [`marketplace.postman_collection.json`](backend/postman/marketplace.postman_collection.json): use em **Import** no Postman e no Newman.
-- `Marketplace IFPB Cajazeiras — etapa 1/`: o formato YAML do Postman, com um arquivo por requisição. É o que o Postman lê quando o repositório é aberto como workspace local.
-
-Depois de abrir a coleção, rode primeiro a pasta **Autenticação**: o **Login** guarda o token do estudante de exemplo, e o **Cadastro** cria outro estudante para os exemplos que precisam de dois. As requisições com foto usam os arquivos de `backend/db/fotos/`. Para o Postman encontrá-los, defina a raiz do repositório em *Settings → General → Working directory*.
+A coleção [`backend/postman/marketplace.postman_collection.json`](backend/postman/marketplace.postman_collection.json) tem requisições de exemplo para todos os endpoints. Importe no Postman (**Import**) e rode primeiro a pasta **Autenticação**: o **Login** guarda o token do estudante de exemplo, e o **Cadastro** cria outro estudante para os exemplos que precisam de dois. As requisições com foto usam os arquivos de `backend/db/fotos/`. Para o Postman encontrá-los, defina a raiz do repositório em *Settings → General → Working directory*.
 
 Para rodar a coleção inteira pelo terminal, com a API no ar:
 

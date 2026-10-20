@@ -25,7 +25,3 @@ replay_pid*
 
 # Variáveis de ambiente locais
 .env
-
-# Configuração local do Postman (aponta para o workspace de quem abriu o repositório no Postman)
-.postman/
-/postman/
