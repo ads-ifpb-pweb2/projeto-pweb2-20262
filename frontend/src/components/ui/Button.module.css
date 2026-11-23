@@ -1,0 +1,11 @@
+.botao {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  padding: 0.6rem 1.1rem; border-radius: var(--raio); border: 1px solid transparent;
+  font: inherit; font-weight: 600; cursor: pointer; text-decoration: none;
+}
+.botao:disabled { opacity: 0.55; cursor: not-allowed; }
+.primario { background: var(--cor-primaria); color: #fff; }
+.primario:hover:not(:disabled) { background: var(--cor-primaria-escura); }
+.secundario { background: transparent; color: var(--cor-primaria); border-color: var(--cor-primaria); }
+.perigo { background: var(--cor-erro); color: #fff; }
+.cheio { width: 100%; }

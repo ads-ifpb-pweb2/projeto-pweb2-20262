@@ -1,0 +1,10 @@
+.campo { display: flex; flex-direction: column; gap: 0.35rem; }
+.rotulo { font-weight: 600; font-size: 0.9rem; }
+.opcional { font-weight: 400; color: var(--cor-texto-suave); }
+.controle {
+  padding: 0.6rem 0.75rem; border: 1px solid var(--cor-borda); border-radius: var(--raio);
+  font: inherit; background: #fff;
+}
+.controle:focus { outline: 2px solid var(--cor-primaria); outline-offset: 1px; }
+.invalido { border-color: var(--cor-erro); }
+.erro { color: var(--cor-erro); font-size: 0.85rem; }
