@@ -1,0 +1,5 @@
+.paginacao { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; }
+.nav { display: flex; align-items: center; gap: 0.75rem; }
+.info { font-size: 0.9rem; color: var(--cor-texto-suave); }
+.tamanho { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; }
+.tamanho select { padding: 0.3rem 0.5rem; border: 1px solid var(--cor-borda); border-radius: var(--raio); font: inherit; }

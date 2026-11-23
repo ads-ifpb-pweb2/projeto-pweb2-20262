@@ -1,0 +1,8 @@
+.cabecalho {
+  display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+  padding: 1.5rem; background: var(--cor-superficie); border: 1px solid var(--cor-borda); border-radius: var(--raio);
+}
+.dados { display: flex; flex-direction: column; gap: 0.25rem; margin-right: auto; }
+.dados h1 { margin: 0; }
+.curso { color: var(--cor-texto-suave); }
+.semContato { color: var(--cor-texto-suave); font-style: italic; }
