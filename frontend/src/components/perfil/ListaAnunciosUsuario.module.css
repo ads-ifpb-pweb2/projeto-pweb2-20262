@@ -1,0 +1,4 @@
+.lista { display: flex; flex-direction: column; gap: 0.75rem; transition: opacity 0.15s; }
+.carregandoPagina { opacity: 0.55; pointer-events: none; }
+.vazio { color: var(--cor-texto-suave); padding: 1.5rem 0; }
+.centro { display: grid; place-items: center; padding: 2rem 0; }

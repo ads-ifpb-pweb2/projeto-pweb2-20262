@@ -22,3 +22,12 @@ export function PublicOnlyRoute() {
   if (usuario) return <Navigate to={destino} replace />
   return <Outlet />
 }
+
+/** RF01.5 — /admin sem sessão vai para /admin/login; estudante logado volta para /vendas */
+export function AdminGuardRoute() {
+  const { usuario, sessaoRestaurada } = useAppSelector((s) => s.auth)
+
+  if (!sessaoRestaurada) return <Spinner tela />
+  if (!usuario) return <Navigate to="/admin/login" replace />
+  return <Navigate to="/vendas" replace />
+}
