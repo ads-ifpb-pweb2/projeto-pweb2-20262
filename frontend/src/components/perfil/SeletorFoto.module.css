@@ -1,0 +1,7 @@
+.seletor { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; }
+.controles { display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-start; }
+.dica { font-size: 0.85rem; color: var(--cor-texto-suave); }
+.arquivo { font-size: 0.9rem; word-break: break-all; }
+.erro { color: var(--cor-erro); font-size: 0.85rem; }
+.botoes { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.oculto { display: none; }

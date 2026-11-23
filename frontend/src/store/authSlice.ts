@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import * as authApi from '../api/auth'
+import * as usuariosApi from '../api/usuarios'
 import { serializarErro, tokenStorage, type ErroSerializado } from '../api/client'
-import type { CadastroRequest, LoginRequest, UsuarioLogado } from '../api/types'
+import type { AtualizarUsuarioRequest, CadastroRequest, LoginRequest, UsuarioLogado } from '../api/types'
 
 // RF01 — estado `auth`: usuário logado, token e status das requisições (carregando/erro).
 // A lista de cursos e os valores dos formulários NÃO ficam aqui (estado local da página).
@@ -72,6 +73,33 @@ export const sair = createAsyncThunk('auth/sair', async () => {
   tokenStorage.clear()
 })
 
+/**
+ * RF02.2 — salva nome, curso e telefone. Altera o usuário logado (estado global), por isso é um thunk.
+ * Quem chama usa `.unwrap()` para tratar o erro por campo na própria tela; `auth.status` não é alterado.
+ */
+export const atualizarDadosPerfil = createAsyncThunk<UsuarioLogado, AtualizarUsuarioRequest, Rejeitado>(
+  'auth/atualizarDadosPerfil',
+  async (dados, { rejectWithValue }) => {
+    try {
+      return await usuariosApi.atualizarUsuario(dados)
+    } catch (e) {
+      return rejectWithValue(serializarErro(e))
+    }
+  },
+)
+
+/** RF02.2 — envia ou troca a foto de perfil (JPEG, PNG ou WebP, até 5 MB) */
+export const atualizarFotoPerfil = createAsyncThunk<UsuarioLogado, File, Rejeitado>(
+  'auth/atualizarFotoPerfil',
+  async (foto, { rejectWithValue }) => {
+    try {
+      return await usuariosApi.atualizarFoto(foto)
+    } catch (e) {
+      return rejectWithValue(serializarErro(e))
+    }
+  },
+)
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -122,6 +150,12 @@ const authSlice = createSlice({
         state.usuario = null
         state.token = null
         state.sessaoRestaurada = true
+      })
+      .addCase(atualizarDadosPerfil.fulfilled, (state, action) => {
+        state.usuario = action.payload
+      })
+      .addCase(atualizarFotoPerfil.fulfilled, (state, action) => {
+        state.usuario = action.payload
       })
       .addCase(sair.fulfilled, (state) => {
         state.usuario = null
