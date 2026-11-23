@@ -17,7 +17,9 @@ export function AnuncioLinha({ anuncio }: { anuncio: AnuncioResumo }) {
         <span className={styles.meta}>
           {anuncio.categoria.nome} · publicado em {formatarData(anuncio.publicadoEm)}
         </span>
-        <SeloEstado estado={anuncio.estado} />
+        <div>
+          <SeloEstado estado={anuncio.estado} />
+        </div>
       </div>
       <span className={styles.preco}>{formatarPreco(anuncio.preco)}</span>
     </Link>

@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { AnuncioResumo, Pagina } from '../../api/types'
 import { AnuncioLinha } from '../anuncio/AnuncioLinha'
 import { Alert } from '../ui/Alert'
@@ -13,7 +14,7 @@ export interface ListaAnunciosUsuarioProps {
   tamanho: number
   onPagina: (pagina: number) => void
   onTamanho: (tamanho: number) => void
-  textoVazio?: string
+  textoVazio?: ReactNode
 }
 
 /** Lista paginada de anúncios de um usuário. Os props vêm direto do hook usePerfil. */

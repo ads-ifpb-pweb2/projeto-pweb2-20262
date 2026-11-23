@@ -1,0 +1,2 @@
+.titulo { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin: 2rem 0 0.75rem; }
+.titulo h2 { margin: 0; }

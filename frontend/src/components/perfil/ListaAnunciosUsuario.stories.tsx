@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { MemoryRouter } from 'react-router-dom'
 import { ListaAnunciosUsuario } from './ListaAnunciosUsuario'
-import { anuncioExemplo } from '../anuncio/AnuncioLinha.stories'
+import { anuncioExemplo } from '../anuncio/exemplos'
 
 const itens = [
   anuncioExemplo,
