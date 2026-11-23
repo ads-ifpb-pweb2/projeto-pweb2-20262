@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
-import { PublicOnlyRoute, ProtectedRoute } from './ProtectedRoute'
+import { AdminGuardRoute, PublicOnlyRoute, ProtectedRoute } from './ProtectedRoute'
 import { Layout } from '../components/layout/Layout'
 import { Login } from '../pages/Login'
 import { Cadastro } from '../pages/Cadastro'
@@ -36,6 +36,18 @@ export function AppRoutes() {
           <Route path="/usuarios/:id" element={<Usuario />} />
         </Route>
       </Route>
+
+      <Route
+        path="/admin/login"
+        element={
+          <div style={{ padding: '2rem', textAlign: 'center' }}>
+            <h1>Login do Administrador</h1>
+            <p>Painel administrativo disponível na Etapa 2.</p>
+          </div>
+        }
+      />
+      <Route path="/admin" element={<AdminGuardRoute />} />
+      <Route path="/admin/*" element={<AdminGuardRoute />} />
 
       <Route path="*" element={<NaoEncontrada />} />
     </Routes>
