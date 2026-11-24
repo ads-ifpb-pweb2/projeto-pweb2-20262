@@ -1,12 +1,39 @@
-// RF03 — /anuncios/novo. Formulário em estado LOCAL; ao enviar, dispatch(criarAnuncio(dados)) (thunk em store/anunciosSlice.ts).
-// Preço obrigatório em vendas e oculto em doações. Upload de 1 a 10 fotos com pré-visualização, remoção e escolha da capa (capaIndice).
-// Listas: categorias (listarCategorias) e estados de conservação (listarEstadosConservacao). Preço em reais com ponto ('80.00').
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import type { DadosAnuncioForm } from '../api/types'
+import { FormAnuncio } from '../components/anuncio/FormAnuncio'
+import { criarAnuncio, limparAnuncio } from '../store/anunciosSlice'
+import { useAppDispatch, useAppSelector } from '../store/hooks'
 
 export function AnuncioNovo() {
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
+  const { status, erro } = useAppSelector((state) => state.anuncios)
+
+  useEffect(() => {
+    dispatch(limparAnuncio())
+  }, [dispatch])
+
+  async function handleCriar(dados: DadosAnuncioForm) {
+    try {
+      const criado = await dispatch(criarAnuncio(dados)).unwrap()
+      navigate(`/anuncios/${criado.id}`)
+    } catch {
+      // Erro já armazenado em state.anuncios.erro
+    }
+  }
+
   return (
-    <>
+    <section>
       <h1>Novo anúncio</h1>
-      <p>TODO: implementar.</p>
-    </>
+      <FormAnuncio
+        enviando={status === 'loading'}
+        erroApi={erro?.mensagem}
+        errosCamposApi={erro?.campos}
+        onSubmit={handleCriar}
+        onCancelar={() => navigate(-1)}
+        textoBotaoSalvar="Publicar anúncio"
+      />
+    </section>
   )
 }
