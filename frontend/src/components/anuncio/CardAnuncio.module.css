@@ -1,0 +1,117 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.card:hover {
+  border-color: var(--cor-primaria);
+  box-shadow: 0 4px 12px rgba(28, 35, 33, 0.08);
+  transform: translateY(-2px);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--cor-primaria);
+  outline-offset: 2px;
+}
+
+.midia {
+  aspect-ratio: 4 / 3;
+  background: var(--cor-fundo);
+  overflow: hidden;
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.capa {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.semFoto {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: var(--cor-texto-suave);
+  font-size: 0.875rem;
+}
+
+.corpo {
+  padding: 0.9rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  flex: 1;
+}
+
+.topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-height: 1.5rem;
+}
+
+.categoria {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--cor-texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.titulo {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--cor-texto);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.preco {
+  margin: 0.15rem 0 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--cor-texto);
+}
+
+.doacao {
+  color: var(--cor-primaria);
+}
+
+.rodape {
+  margin-top: auto;
+  padding-top: 0.55rem;
+  border-top: 1px solid var(--cor-fundo);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.conservacao {
+  font-size: 0.8rem;
+  color: var(--cor-texto-suave);
+}
+
+.meta {
+  font-size: 0.78rem;
+  color: var(--cor-texto-suave);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -1,0 +1,27 @@
+.barra {
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.campos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.acoes {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.erro {
+  margin: 0.65rem 0 0;
+  color: var(--cor-erro);
+  font-size: 0.875rem;
+}
