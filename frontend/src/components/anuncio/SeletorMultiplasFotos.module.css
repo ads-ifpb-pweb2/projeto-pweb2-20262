@@ -1,0 +1,135 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rotulo {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--cor-texto);
+}
+
+.contador {
+  font-size: 0.85rem;
+  color: var(--cor-texto-suave);
+}
+
+.dica {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--cor-texto-suave);
+}
+
+.inputOculto {
+  display: none;
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+  gap: 0.75rem;
+}
+
+.item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid var(--cor-borda);
+  border-radius: var(--raio);
+  overflow: hidden;
+  background: var(--cor-superficie);
+}
+
+.itemCapa {
+  border-color: var(--cor-primaria);
+}
+
+.imagem {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+  background: var(--cor-fundo);
+}
+
+.badgeCapa {
+  position: absolute;
+  top: 0.4rem;
+  left: 0.4rem;
+  background: var(--cor-primaria);
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.acoes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.5rem;
+}
+
+.btnAcao {
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 4px;
+  border: 1px solid var(--cor-borda);
+  background: var(--cor-superficie);
+  color: var(--cor-texto);
+  cursor: pointer;
+}
+
+.btnAcao:hover {
+  border-color: var(--cor-primaria);
+  color: var(--cor-primaria);
+}
+
+.btnRemover {
+  color: var(--cor-erro);
+  border-color: transparent;
+  background: var(--cor-erro-fundo);
+}
+
+.btnRemover:hover {
+  border-color: var(--cor-erro);
+  color: var(--cor-erro);
+}
+
+.areaAdicionar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 175px;
+  padding: 1rem;
+  border: 2px dashed var(--cor-borda);
+  border-radius: var(--raio);
+  background: var(--cor-fundo);
+  color: var(--cor-primaria);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+.areaAdicionar:hover {
+  border-color: var(--cor-primaria);
+  background: var(--cor-superficie);
+}
+
+.erro {
+  color: var(--cor-erro);
+  font-size: 0.85rem;
+}
