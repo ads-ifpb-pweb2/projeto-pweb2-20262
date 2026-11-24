@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import type { AnuncioResumo, Pagina } from '../../api/types'
-import { AnuncioLinha } from '../anuncio/AnuncioLinha'
+import { CardAnuncio } from '../anuncio/CardAnuncio'
 import { Alert } from '../ui/Alert'
 import { Paginacao } from '../ui/Paginacao'
 import { Spinner } from '../ui/Spinner'
@@ -15,12 +15,15 @@ export interface ListaAnunciosUsuarioProps {
   onPagina: (pagina: number) => void
   onTamanho: (tamanho: number) => void
   textoVazio?: ReactNode
+  /** Selo de estado em cada card. Ligado no /perfil (o dono vê todos os estados); desligado em /usuarios/:id (só ativos). */
+  mostrarEstado?: boolean
 }
 
 /** Lista paginada de anúncios de um usuário. Os props vêm direto do hook usePerfil. */
 export function ListaAnunciosUsuario({
   anuncios, carregando, erro, pagina, tamanho, onPagina, onTamanho,
   textoVazio = 'Nenhum anúncio por aqui ainda.',
+  mostrarEstado = true,
 }: ListaAnunciosUsuarioProps) {
   if (erro) return <Alert>{erro}</Alert>
   if (!anuncios) {
@@ -30,9 +33,9 @@ export function ListaAnunciosUsuario({
 
   return (
     <>
-      <div className={`${styles.lista} ${carregando ? styles.carregandoPagina : ''}`} aria-busy={carregando}>
+      <div className={`${styles.grade} ${carregando ? styles.carregandoPagina : ''}`} aria-busy={carregando}>
         {anuncios.itens.map((a) => (
-          <AnuncioLinha key={a.id} anuncio={a} />
+          <CardAnuncio key={a.id} anuncio={a} mostrarEstado={mostrarEstado} />
         ))}
       </div>
       <Paginacao

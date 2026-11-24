@@ -50,6 +50,7 @@ function UsuarioConteudo({ id }: { id: number }) {
           onPagina={p.setPagina}
           onTamanho={p.mudarTamanho}
           textoVazio="Este estudante não tem anúncios ativos no momento."
+          mostrarEstado={false}
         />
       </section>
     </>
