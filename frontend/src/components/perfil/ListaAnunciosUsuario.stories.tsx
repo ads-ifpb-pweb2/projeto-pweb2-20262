@@ -24,6 +24,7 @@ type Story = StoryObj<typeof meta>
 
 export const ComAnuncios: Story = {}
 export const VariasPaginas: Story = { args: { anuncios: { itens, pagina: 2, tamanho: 5, total: 14, totalPaginas: 3 }, pagina: 2, tamanho: 5 } }
+export const SemSeloDeEstado: Story = { args: { mostrarEstado: false } }
 export const Trocando: Story = { args: { carregando: true } }
 export const Carregando: Story = { args: { anuncios: null, carregando: true } }
 export const Vazio: Story = { args: { anuncios: { itens: [], pagina: 1, tamanho: 10, total: 0, totalPaginas: 0 } } }
